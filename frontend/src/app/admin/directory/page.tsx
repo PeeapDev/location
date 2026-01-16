@@ -36,12 +36,12 @@ type TabType = 'zones' | 'addresses' | 'lookup' | 'search';
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 export default function AdminDirectoryPage() {
-  const [activeTab, setActiveTab] = useState<TabType>('zones');
+  const [activeTab, setActiveTab] = useState<TabType>('search');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [zones, setZones] = useState<PostalZone[]>([]);
   const [addresses, setAddresses] = useState<Address[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
   // Selected district code, postal code and zone for detail view (3-level hierarchy)
@@ -57,11 +57,15 @@ export default function AdminDirectoryPage() {
   const [lookupResult, setLookupResult] = useState<PostalZone | null>(null);
   const [lookupError, setLookupError] = useState('');
 
-  // Load zones from API
+  // Load data lazily based on active tab
   useEffect(() => {
-    loadZones();
-    loadAddresses();
-  }, []);
+    if (activeTab === 'zones' && zones.length === 0) {
+      loadZones();
+    }
+    if (activeTab === 'addresses' && addresses.length === 0) {
+      loadAddresses();
+    }
+  }, [activeTab]);
 
   const loadZones = async () => {
     try {
