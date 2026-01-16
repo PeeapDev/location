@@ -242,7 +242,7 @@ export default function OfflineSearchDirectory({ onSelectZone }: OfflineSearchDi
           <div className="mb-4 flex items-center justify-between text-sm text-gray-500">
             <span>
               Found <strong>{results.length}</strong> results
-              {results[0]?.source === 'offline' && ' (from cache)'}
+              {results[0]?.source === 'offline' && ' (offline data)'}
             </span>
           </div>
         )}
@@ -263,8 +263,8 @@ export default function OfflineSearchDirectory({ onSelectZone }: OfflineSearchDi
                         {result.zone_code}
                       </span>
                       {result.source === 'offline' && (
-                        <span className="px-1.5 py-0.5 bg-gray-100 text-gray-600 text-xs rounded">
-                          cached
+                        <span className="px-1.5 py-0.5 bg-green-100 text-green-700 text-xs rounded font-medium">
+                          offline
                         </span>
                       )}
                     </div>

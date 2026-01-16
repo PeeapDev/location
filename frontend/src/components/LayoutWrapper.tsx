@@ -1,6 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
+import { ServiceWorkerProvider } from './ServiceWorkerProvider';
 
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -8,12 +9,12 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
 
   if (isAdminRoute) {
     // Admin routes - no nav/footer, just the content
-    return <>{children}</>;
+    return <ServiceWorkerProvider>{children}</ServiceWorkerProvider>;
   }
 
-  // Public routes - show nav and footer
+  // Public routes - show nav and footer with offline support
   return (
-    <>
+    <ServiceWorkerProvider>
       <nav className="bg-xeeno-primary text-white shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -82,6 +83,6 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
           </div>
         </div>
       </footer>
-    </>
+    </ServiceWorkerProvider>
   );
 }

@@ -6,6 +6,14 @@ import LayoutWrapper from '@/components/LayoutWrapper';
 export const metadata: Metadata = {
   title: 'Xeeno Map - Sierra Leone National Address System',
   description: 'National Digital Postal Code and Address System for Sierra Leone',
+  manifest: '/manifest.json',
+  themeColor: '#4F46E5',
+  viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Xeeno Map',
+  },
 };
 
 export default function RootLayout({

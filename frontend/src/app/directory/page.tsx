@@ -1,6 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import OfflineSearchDirectory from '@/components/OfflineSearchDirectory';
+import SyncStatus from '@/components/SyncStatus';
+import { useOffline } from '@/components/ServiceWorkerProvider';
 
 // Types
 interface PostalZone {
@@ -45,12 +48,13 @@ interface POICategory {
   count: number;
 }
 
-type TabType = 'zones' | 'addresses' | 'pois' | 'lookup' | 'register';
+type TabType = 'search' | 'zones' | 'addresses' | 'pois' | 'lookup' | 'register';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 export default function DirectoryPage() {
-  const [activeTab, setActiveTab] = useState<TabType>('zones');
+  const [activeTab, setActiveTab] = useState<TabType>('search');
+  const { isOnline } = useOffline();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [zones, setZones] = useState<PostalZone[]>([]);
@@ -330,8 +334,18 @@ export default function DirectoryPage() {
       {/* Header */}
       <div className="bg-white border-b">
         <div className="max-w-7xl mx-auto px-4 py-6">
-          <h1 className="text-3xl font-bold text-gray-900">Postal Directory</h1>
-          <p className="text-gray-600 mt-1">Search postal zones and addresses across Sierra Leone</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Postal Directory</h1>
+              <p className="text-gray-600 mt-1">
+                Search postal zones and addresses across Sierra Leone
+                {!isOnline && <span className="ml-2 text-amber-600 font-medium">(Working Offline)</span>}
+              </p>
+            </div>
+            <div className="hidden md:block">
+              <SyncStatus compact />
+            </div>
+          </div>
         </div>
       </div>
 
@@ -340,6 +354,7 @@ export default function DirectoryPage() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex space-x-8 overflow-x-auto">
             {[
+              { id: 'search', label: 'Search', icon: '🔍' },
               { id: 'zones', label: 'Postal Zones', count: zones.length },
               { id: 'addresses', label: 'Addresses', count: addresses.length },
               { id: 'pois', label: 'Places', count: totalPois || pois.length },
@@ -420,6 +435,17 @@ export default function DirectoryPage() {
 
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 py-6">
+        {/* Search Tab - Offline-First */}
+        {activeTab === 'search' && (
+          <div className="space-y-6">
+            <OfflineSearchDirectory
+              onSelectZone={(zone) => {
+                console.log('Selected zone:', zone);
+              }}
+            />
+          </div>
+        )}
+
         {/* Zones Tab */}
         {activeTab === 'zones' && (
           <div>
