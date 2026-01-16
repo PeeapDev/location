@@ -7,6 +7,12 @@ import {
   SIERRA_LEONE_CENTER,
   SIERRA_LEONE_BOUNDS,
 } from '@/lib/sierra-leone-boundary';
+import {
+  FREETOWN_CENTER,
+  FREETOWN_BOUNDS,
+  FREETOWN_NEIGHBORHOODS,
+  FREETOWN_LANDMARKS,
+} from '@/lib/freetown-boundary';
 
 interface MapProps {
   onMapClick?: (lat: number, lng: number) => void;
@@ -14,6 +20,9 @@ interface MapProps {
   initialZoom?: number;
   restrictToSierraLeone?: boolean;
   showBoundary?: boolean;
+  focusFreetown?: boolean;
+  showFreetownNeighborhoods?: boolean;
+  showFreetownLandmarks?: boolean;
 }
 
 export default function Map({
@@ -22,10 +31,19 @@ export default function Map({
   initialZoom = 8,
   restrictToSierraLeone = true,
   showBoundary = true,
+  focusFreetown = false,
+  showFreetownNeighborhoods = false,
+  showFreetownLandmarks = false,
 }: MapProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const neighborhoodMarkers = useRef<maplibregl.Marker[]>([]);
+  const landmarkMarkers = useRef<maplibregl.Marker[]>([]);
+
+  // Determine actual center and zoom based on focusFreetown
+  const effectiveCenter = focusFreetown ? FREETOWN_CENTER : initialCenter;
+  const effectiveZoom = focusFreetown ? 12 : initialZoom;
 
   useEffect(() => {
     if (map.current || !mapContainer.current) return;
@@ -50,8 +68,8 @@ export default function Map({
           },
         ],
       },
-      center: initialCenter,
-      zoom: initialZoom,
+      center: effectiveCenter,
+      zoom: effectiveZoom,
       maxBounds: restrictToSierraLeone ? SIERRA_LEONE_BOUNDS : undefined,
       minZoom: restrictToSierraLeone ? 6 : undefined,
       maxZoom: 18,
@@ -128,27 +146,41 @@ export default function Map({
             },
           });
 
-          // Fit map to Sierra Leone bounds from GADM
-          const bbox = country.features[0].bbox || [-13.5, 6.9, -10.2, 10.0];
-          map.current.fitBounds(
-            [[bbox[0], bbox[1]], [bbox[2], bbox[3]]],
-            { padding: 0, duration: 1500, maxZoom: 8.5 }
-          );
+          // Fit map to appropriate bounds
+          if (focusFreetown) {
+            // Focus on Freetown
+            map.current.fitBounds(FREETOWN_BOUNDS, {
+              padding: 20,
+              duration: 1500,
+              maxZoom: 13,
+            });
+          } else {
+            // Fit map to Sierra Leone bounds from GADM
+            const bbox = country.features[0].bbox || [-13.5, 6.9, -10.2, 10.0];
+            map.current.fitBounds(
+              [[bbox[0], bbox[1]], [bbox[2], bbox[3]]],
+              { padding: 0, duration: 1500, maxZoom: 8.5 }
+            );
+          }
         } catch (err) {
           console.error('Failed to load GADM boundary:', err);
           // Fallback to simple bounds
-          map.current.fitBounds(SIERRA_LEONE_BOUNDS, {
-            padding: 0,
+          const fallbackBounds = focusFreetown ? FREETOWN_BOUNDS : SIERRA_LEONE_BOUNDS;
+          const fallbackZoom = focusFreetown ? 13 : 8.5;
+          map.current.fitBounds(fallbackBounds, {
+            padding: focusFreetown ? 20 : 0,
             duration: 1500,
-            maxZoom: 8.5,
+            maxZoom: fallbackZoom,
           });
         }
       } else {
         // No boundary, just fit to bounds
-        map.current.fitBounds(SIERRA_LEONE_BOUNDS, {
-          padding: 0,
+        const bounds = focusFreetown ? FREETOWN_BOUNDS : SIERRA_LEONE_BOUNDS;
+        const maxZoom = focusFreetown ? 13 : 8.5;
+        map.current.fitBounds(bounds, {
+          padding: focusFreetown ? 20 : 0,
           duration: 1500,
-          maxZoom: 8.5,
+          maxZoom,
         });
       }
 
@@ -165,7 +197,69 @@ export default function Map({
       map.current?.remove();
       map.current = null;
     };
-  }, [initialCenter, initialZoom, onMapClick, restrictToSierraLeone, showBoundary]);
+  }, [effectiveCenter, effectiveZoom, onMapClick, restrictToSierraLeone, showBoundary, focusFreetown]);
+
+  // Toggle neighborhood markers
+  useEffect(() => {
+    if (!map.current || !isLoaded) return;
+
+    // Clear existing neighborhood markers
+    neighborhoodMarkers.current.forEach(m => m.remove());
+    neighborhoodMarkers.current = [];
+
+    if (showFreetownNeighborhoods) {
+      FREETOWN_NEIGHBORHOODS.forEach(neighborhood => {
+        const el = document.createElement('div');
+        el.style.cssText = `
+          background: #6366f1;
+          color: white;
+          padding: 2px 6px;
+          border-radius: 4px;
+          font-size: 10px;
+          font-weight: 500;
+          white-space: nowrap;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+          cursor: pointer;
+        `;
+        el.textContent = neighborhood.name;
+
+        const marker = new maplibregl.Marker({ element: el })
+          .setLngLat(neighborhood.center)
+          .setPopup(new maplibregl.Popup({ offset: 15 }).setHTML(`
+            <div style="padding: 8px;">
+              <div style="font-weight: 600;">${neighborhood.name}</div>
+              <div style="font-size: 12px; color: #666; text-transform: capitalize;">${neighborhood.type}</div>
+            </div>
+          `))
+          .addTo(map.current!);
+        neighborhoodMarkers.current.push(marker);
+      });
+    }
+  }, [showFreetownNeighborhoods, isLoaded]);
+
+  // Toggle landmark markers
+  useEffect(() => {
+    if (!map.current || !isLoaded) return;
+
+    // Clear existing landmark markers
+    landmarkMarkers.current.forEach(m => m.remove());
+    landmarkMarkers.current = [];
+
+    if (showFreetownLandmarks) {
+      FREETOWN_LANDMARKS.forEach(landmark => {
+        const marker = new maplibregl.Marker({ color: '#ef4444', scale: 0.7 })
+          .setLngLat(landmark.center)
+          .setPopup(new maplibregl.Popup({ offset: 25 }).setHTML(`
+            <div style="padding: 8px;">
+              <div style="font-weight: 600;">${landmark.name}</div>
+              <div style="font-size: 12px; color: #666; text-transform: capitalize;">${landmark.type}</div>
+            </div>
+          `))
+          .addTo(map.current!);
+        landmarkMarkers.current.push(marker);
+      });
+    }
+  }, [showFreetownLandmarks, isLoaded]);
 
   return (
     <div className="relative w-full h-full" style={{ minHeight: '400px' }}>
@@ -192,7 +286,9 @@ export default function Map({
               <div className="w-16 h-16 border-4 border-slate-200 rounded-full"></div>
               <div className="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-t-xeeno-primary rounded-full animate-spin"></div>
             </div>
-            <p className="text-slate-500 animate-pulse">Loading Sierra Leone...</p>
+            <p className="text-slate-500 animate-pulse">
+              Loading {focusFreetown ? 'Freetown' : 'Sierra Leone'}...
+            </p>
           </div>
         </div>
       )}

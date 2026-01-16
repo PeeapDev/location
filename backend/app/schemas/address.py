@@ -1,7 +1,7 @@
 """Pydantic schemas for Address API endpoints."""
 
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional, List, Tuple
 from pydantic import BaseModel, Field, field_validator
 from app.models.address import AddressType, VerificationStatus
 
@@ -70,6 +70,8 @@ class AddressResponse(AddressBase):
     latitude: float
     longitude: float
     accuracy_m: Optional[float]
+    plus_code: Optional[str] = None
+    plus_code_short: Optional[str] = None
     confidence_score: float
     verification_status: VerificationStatus
     created_at: datetime
@@ -93,6 +95,7 @@ class AddressSearchResult(BaseModel):
     """Single search result."""
     pda_id: str
     postal_code: str
+    plus_code: Optional[str] = None
     display_address: str
     street_name: Optional[str]
     district: str
@@ -116,6 +119,7 @@ class AutocompleteSuggestion(BaseModel):
     display: str
     pda_id: str
     postal_code: str
+    plus_code: Optional[str] = None
     district: str
     match_type: str
 
@@ -176,3 +180,42 @@ class ReverseGeocodeResponse(BaseModel):
     exact_match: Optional[NearbyAddress]
     nearest_addresses: List[NearbyAddress]
     zone: Optional[ZoneInfo]
+
+
+# ============================================================================
+# Plus Code (Open Location Code) Schemas
+# ============================================================================
+
+class PlusCodeEncodeRequest(BaseModel):
+    """Request schema for encoding coordinates to Plus Code."""
+    latitude: float = Field(..., ge=-90, le=90, description="Latitude in decimal degrees")
+    longitude: float = Field(..., ge=-180, le=180, description="Longitude in decimal degrees")
+    precision: int = Field(11, ge=10, le=12, description="Code length: 10=~14m, 11=~3m, 12=~1m")
+
+
+class PlusCodeEncodeResponse(BaseModel):
+    """Response schema for Plus Code encoding."""
+    plus_code: str = Field(..., description="Full Plus Code (e.g., 6WQPVX22+5WX)")
+    latitude: float
+    longitude: float
+    precision_meters: Tuple[float, float] = Field(..., description="Approximate area (width, height) in meters")
+
+
+class PlusCodeDecodeRequest(BaseModel):
+    """Request schema for decoding Plus Code to coordinates."""
+    plus_code: str = Field(..., description="Plus Code to decode (full or short)")
+    reference_latitude: Optional[float] = Field(None, ge=-90, le=90, description="Reference lat for short codes")
+    reference_longitude: Optional[float] = Field(None, ge=-180, le=180, description="Reference lon for short codes")
+
+
+class PlusCodeDecodeResponse(BaseModel):
+    """Response schema for Plus Code decoding."""
+    plus_code: str = Field(..., description="Full Plus Code")
+    latitude: float = Field(..., description="Center latitude")
+    longitude: float = Field(..., description="Center longitude")
+    latitude_lo: float = Field(..., description="South boundary")
+    latitude_hi: float = Field(..., description="North boundary")
+    longitude_lo: float = Field(..., description="West boundary")
+    longitude_hi: float = Field(..., description="East boundary")
+    is_full: bool = Field(..., description="True if this is a full (not short) code")
+    is_short: bool = Field(..., description="True if original input was a short code")

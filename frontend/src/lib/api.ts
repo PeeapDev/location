@@ -10,6 +10,8 @@ import type {
   AddressCreateRequest,
   ReverseGeocodeResponse,
   PostalZone,
+  PlusCodeEncodeResponse,
+  PlusCodeDecodeResponse,
 } from '@/types/address';
 import { useAuthStore } from './auth-store';
 
@@ -128,6 +130,46 @@ export const addressApi = {
     const response = await api.get('/address/location/resolve', {
       params: { lat: latitude, lon: longitude, radius },
     });
+    return response.data;
+  },
+
+  /**
+   * Encode coordinates to Plus Code
+   */
+  encodePlusCode: async (
+    latitude: number,
+    longitude: number,
+    precision: 10 | 11 | 12 = 11
+  ): Promise<PlusCodeEncodeResponse> => {
+    const response = await api.post('/address/pluscode/encode', {
+      latitude,
+      longitude,
+      precision,
+    });
+    return response.data;
+  },
+
+  /**
+   * Decode Plus Code to coordinates
+   */
+  decodePlusCode: async (
+    plusCode: string,
+    referenceLatitude?: number,
+    referenceLongitude?: number
+  ): Promise<PlusCodeDecodeResponse> => {
+    const response = await api.post('/address/pluscode/decode', {
+      plus_code: plusCode,
+      reference_latitude: referenceLatitude,
+      reference_longitude: referenceLongitude,
+    });
+    return response.data;
+  },
+
+  /**
+   * Get address by Plus Code
+   */
+  getByPlusCode: async (plusCode: string): Promise<Address | { message: string; plus_code: string; nearby_addresses: any[] }> => {
+    const response = await api.get(`/address/pluscode/${encodeURIComponent(plusCode)}`);
     return response.data;
   },
 };
@@ -529,6 +571,91 @@ export const settingsApi = {
 
   initializeDefaults: async () => {
     const response = await api.post('/settings/initialize');
+    return response.data;
+  },
+};
+
+/**
+ * POI (Points of Interest) API
+ */
+export const poiApi = {
+  /**
+   * List POIs with filtering
+   */
+  list: async (params?: {
+    category?: string;
+    subcategory?: string;
+    zone_code?: string;
+    district?: string;
+    region?: number;
+    search?: string;
+    page?: number;
+    page_size?: number;
+  }) => {
+    const response = await api.get('/pois', { params });
+    return response.data;
+  },
+
+  /**
+   * Get POI by ID
+   */
+  get: async (id: number) => {
+    const response = await api.get(`/pois/${id}`);
+    return response.data;
+  },
+
+  /**
+   * Search POIs by name
+   */
+  search: async (query: string, category?: string, limit: number = 20) => {
+    const response = await api.get('/pois/search', {
+      params: { q: query, category, limit },
+    });
+    return response.data;
+  },
+
+  /**
+   * Get nearby POIs
+   */
+  nearby: async (
+    latitude: number,
+    longitude: number,
+    options?: {
+      radius_m?: number;
+      category?: string;
+      limit?: number;
+    }
+  ) => {
+    const response = await api.get('/pois/nearby', {
+      params: {
+        lat: latitude,
+        lon: longitude,
+        ...options,
+      },
+    });
+    return response.data;
+  },
+
+  /**
+   * Get POIs in a zone
+   */
+  getByZone: async (
+    zoneCode: string,
+    options?: {
+      category?: string;
+      page?: number;
+      page_size?: number;
+    }
+  ) => {
+    const response = await api.get(`/pois/zone/${zoneCode}`, { params: options });
+    return response.data;
+  },
+
+  /**
+   * Get all categories with counts
+   */
+  getCategories: async () => {
+    const response = await api.get('/pois/categories');
     return response.data;
   },
 };

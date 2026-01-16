@@ -141,7 +141,7 @@ export default function SearchPage() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search by street, building, landmark, or PDA-ID..."
+                placeholder="Search by street, building, landmark, PDA-ID, or Plus Code..."
                 className="search-input"
               />
             </div>

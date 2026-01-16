@@ -29,3 +29,19 @@ data/osm_sierra_leone/gis_osm_buildings_a_free_1.*
 # Cache
 .cache/
 *.cache
+
+# Claude temp files
+.claude/
+tmpclaude-*
+**/tmpclaude-*
+
+# Temp data files
+data/*.geojson.txt
+data/qgis_project/
+data/shapefiles/*.shp
+data/shapefiles/*.shx
+data/shapefiles/*.dbf
+data/shapefiles/*.prj
+
+# Frontend temp
+frontend/nul

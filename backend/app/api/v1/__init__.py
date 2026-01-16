@@ -2,13 +2,16 @@
 
 from fastapi import APIRouter
 
-from app.api.v1 import address, zones, auth, users, geography, analytics, api_keys, audit, settings
+from app.api.v1 import address, zones, auth, users, geography, analytics, api_keys, audit, settings, poi, search, spatial
 
 router = APIRouter(prefix="/v1")
 
 # Public routes
 router.include_router(address.router, prefix="/address", tags=["Address"])
 router.include_router(zones.router, prefix="/zones", tags=["Zones"])
+router.include_router(poi.router, prefix="/pois", tags=["POI"])
+router.include_router(search.router, prefix="/search", tags=["Search"])
+router.include_router(spatial.router, prefix="/spatial", tags=["Spatial"])
 
 # Authentication routes
 router.include_router(auth.router, prefix="/auth", tags=["Authentication"])

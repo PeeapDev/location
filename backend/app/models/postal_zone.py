@@ -1,8 +1,9 @@
 """Postal Zone model for geographic postal code regions."""
 
 from datetime import datetime
-from sqlalchemy import Column, String, DateTime, Integer, CheckConstraint
+from sqlalchemy import Column, String, DateTime, Integer, CheckConstraint, Float, Text, Index
 from sqlalchemy.orm import relationship
+from sqlalchemy.dialects.postgresql import ARRAY, JSONB
 from geoalchemy2 import Geometry
 
 from app.database import Base
@@ -41,7 +42,33 @@ class PostalZone(Base):
     # Segment type
     segment_type = Column(String(20), default="residential")  # residential, commercial, industrial, government, special
 
-    # Metadata
+    # Plus Code for GPS navigation
+    plus_code = Column(String(20), nullable=True, index=True)  # Full Plus Code (e.g., "6CW8CPH5+662")
+    plus_code_short = Column(String(10), nullable=True)  # Short code (e.g., "CPH5+662")
+
+    # Center coordinates for quick lookups
+    center_lat = Column(Float, nullable=True)
+    center_lng = Column(Float, nullable=True)
+
+    # Geohash for spatial indexing (precision 9 = ~5m)
+    geohash = Column(String(12), nullable=True, index=True)
+
+    # Metadata for enhanced search
+    alternate_names = Column(ARRAY(String), nullable=True)  # Local/historical names
+    landmarks = Column(ARRAY(String), nullable=True)  # Notable landmarks
+    nearby_pois = Column(ARRAY(String), nullable=True)  # Points of interest
+    common_references = Column(ARRAY(String), nullable=True)  # "near the market"
+    local_names = Column(JSONB, nullable=True)  # {"krio": "name", "temne": "name"}
+    search_text = Column(Text, nullable=True)  # Combined searchable text
+
+    # Spatial validation status
+    validation_status = Column(String(20), default="pending")  # pending, valid, warning, invalid
+    validation_notes = Column(Text, nullable=True)
+
+    # Parent ward (optional, for hierarchy)
+    ward_id = Column(String(10), nullable=True, index=True)
+
+    # Timestamps
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -55,6 +82,8 @@ class PostalZone(Base):
         CheckConstraint("zone_code ~ '^[0-9]{4}-[0-9]{3}$'", name="check_zone_code_format"),
         CheckConstraint("region_code BETWEEN 1 AND 5", name="valid_region_code"),
         CheckConstraint("district_code BETWEEN 0 AND 9", name="valid_district_code"),
+        Index('idx_postal_zone_geohash', 'geohash'),
+        Index('idx_postal_zone_ward', 'ward_id'),
     )
 
     def __repr__(self):

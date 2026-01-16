@@ -74,6 +74,7 @@ async def seed_districts(db: AsyncSession, region_map: dict) -> dict:
                 name=district_name,
                 short_code=district_data["short_code"],
                 full_code=district_data["full_code"],
+                numeric_code=district_data.get("numeric_code"),  # NZ-style numeric code
                 capital=district_data.get("capital", ""),
                 chiefdoms=subdivisions
             )
@@ -86,7 +87,7 @@ async def seed_districts(db: AsyncSession, region_map: dict) -> dict:
 
 
 async def seed_freetown_zones(db: AsyncSession, district_map: dict):
-    """Seed Freetown zones for initial mapping"""
+    """Seed Freetown zones for initial mapping using numeric postal codes"""
 
     # Get Western Urban district ID
     wu_district_id = district_map.get("WU")
@@ -94,7 +95,9 @@ async def seed_freetown_zones(db: AsyncSession, district_map: dict):
         print("  Warning: Western Urban district not found")
         return
 
-    zone_number = 1
+    # Western Urban numeric base code is 11 (postal codes 1100-1199)
+    base_code = 11
+    zone_number = 0  # Start from 00
 
     for ward_name, ward_data in FREETOWN_ZONES.items():
         for neighborhood in ward_data["neighborhoods"]:
@@ -114,8 +117,9 @@ async def seed_freetown_zones(db: AsyncSession, district_map: dict):
             if existing:
                 print(f"    Zone exists: {neighborhood['name']}")
             else:
-                # Create zone
-                primary_code = f"WU-{zone_number:03d}"
+                # Create zone with numeric postal code (NZ format)
+                # Format: XYZZ where XY=district base (11), ZZ=zone number (00-99)
+                primary_code = f"{base_code}{zone_number:02d}"
 
                 zone = Zone(
                     district_id=wu_district_id,
@@ -130,6 +134,9 @@ async def seed_freetown_zones(db: AsyncSession, district_map: dict):
                 print(f"    Created zone: {primary_code} - {neighborhood['name']}")
 
             zone_number += 1
+            if zone_number > 99:
+                print("  Warning: Exceeded 100 zones for Western Urban district")
+                break
 
     await db.flush()
 

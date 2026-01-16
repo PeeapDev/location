@@ -55,6 +55,10 @@ class Address(Base):
     longitude = Column(Float, nullable=False)
     accuracy_m = Column(Float, nullable=True)  # GPS accuracy in meters
 
+    # Plus Code (Open Location Code) - universal location identifier
+    plus_code = Column(String(15), nullable=True, index=True)  # Full code: 6WQPVX22+5WX
+    plus_code_short = Column(String(10), nullable=True)  # Short code: VX22+5WX
+
     # Address components
     street_name = Column(String(200), nullable=True, index=True)
     block = Column(String(50), nullable=True)

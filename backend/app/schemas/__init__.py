@@ -38,6 +38,15 @@ from app.schemas.api_key import (
     APIKeyUsageStats,
     APIKeyUpdate,
 )
+from app.schemas.poi import (
+    POICreate,
+    POIResponse,
+    POIListResponse,
+    POISearchRequest,
+    POINearbyRequest,
+    POINearbyResponse,
+    POICategoriesResponse,
+)
 
 __all__ = [
     # Address schemas
@@ -73,4 +82,12 @@ __all__ = [
     "APIKeyListResponse",
     "APIKeyUsageStats",
     "APIKeyUpdate",
+    # POI schemas
+    "POICreate",
+    "POIResponse",
+    "POIListResponse",
+    "POISearchRequest",
+    "POINearbyRequest",
+    "POINearbyResponse",
+    "POICategoriesResponse",
 ]

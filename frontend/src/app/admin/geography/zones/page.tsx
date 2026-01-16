@@ -9,6 +9,14 @@ import {
   SIERRA_LEONE_BOUNDS,
 } from '@/lib/sierra-leone-boundary';
 import {
+  FREETOWN_BOUNDS,
+  FREETOWN_CENTER,
+  FREETOWN_NEIGHBORHOODS,
+  FREETOWN_LANDMARKS,
+  WESTERN_AREA_URBAN_BOUNDS,
+  getNearestNeighborhood,
+} from '@/lib/freetown-boundary';
+import {
   useNetworkStatus,
   useRegions,
   useDistricts,
@@ -176,12 +184,12 @@ export default function ZonesMapPage() {
   const [showProvinces, setShowProvinces] = useState(true);
   const [showDistricts, setShowDistricts] = useState(true);
   const [showChiefdoms, setShowChiefdoms] = useState(false);
+  const [showNeighborhoods, setShowNeighborhoods] = useState(false);
+  const [showLandmarks, setShowLandmarks] = useState(false);
 
-  // Freetown bounds (Western Urban area)
-  const FREETOWN_BOUNDS: [[number, number], [number, number]] = [
-    [-13.35, 8.35], // Southwest
-    [-13.15, 8.55], // Northeast
-  ];
+  // Store neighborhood/landmark markers
+  const neighborhoodMarkers = useRef<maplibregl.Marker[]>([]);
+  const landmarkMarkers = useRef<maplibregl.Marker[]>([]);
 
   // Toggle layer visibility
   useEffect(() => {
@@ -197,6 +205,62 @@ export default function ZonesMapPage() {
     setVisibility('districts-border', showDistricts);
     setVisibility('chiefdoms-border', showChiefdoms);
   }, [showProvinces, showDistricts, showChiefdoms]);
+
+  // Toggle neighborhood markers
+  useEffect(() => {
+    if (!map.current) return;
+
+    // Clear existing neighborhood markers
+    neighborhoodMarkers.current.forEach(m => m.remove());
+    neighborhoodMarkers.current = [];
+
+    if (showNeighborhoods) {
+      FREETOWN_NEIGHBORHOODS.forEach(neighborhood => {
+        const el = document.createElement('div');
+        el.className = 'neighborhood-marker';
+        el.style.cssText = `
+          background: #6366f1;
+          color: white;
+          padding: 2px 6px;
+          border-radius: 4px;
+          font-size: 10px;
+          font-weight: 500;
+          white-space: nowrap;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        `;
+        el.textContent = neighborhood.name;
+
+        const marker = new maplibregl.Marker({ element: el })
+          .setLngLat(neighborhood.center)
+          .addTo(map.current!);
+        neighborhoodMarkers.current.push(marker);
+      });
+    }
+  }, [showNeighborhoods]);
+
+  // Toggle landmark markers
+  useEffect(() => {
+    if (!map.current) return;
+
+    // Clear existing landmark markers
+    landmarkMarkers.current.forEach(m => m.remove());
+    landmarkMarkers.current = [];
+
+    if (showLandmarks) {
+      FREETOWN_LANDMARKS.forEach(landmark => {
+        const marker = new maplibregl.Marker({ color: '#ef4444', scale: 0.7 })
+          .setLngLat(landmark.center)
+          .setPopup(new maplibregl.Popup({ offset: 25 }).setHTML(`
+            <div class="p-2">
+              <div class="font-semibold">${landmark.name}</div>
+              <div class="text-xs text-gray-500 capitalize">${landmark.type}</div>
+            </div>
+          `))
+          .addTo(map.current!);
+        landmarkMarkers.current.push(marker);
+      });
+    }
+  }, [showLandmarks]);
 
   // Initialize map
   useEffect(() => {
@@ -1263,6 +1327,33 @@ export default function ZonesMapPage() {
                 />
                 <span className="w-4 h-0.5 bg-green-600"></span>
                 <span>Chiefdoms</span>
+              </label>
+            </div>
+          </div>
+
+          {/* Freetown Location Services */}
+          <div className="border-t border-gray-200 pt-2">
+            <h4 className="font-medium mb-2">Freetown</h4>
+            <div className="space-y-1.5">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={showNeighborhoods}
+                  onChange={(e) => setShowNeighborhoods(e.target.checked)}
+                  className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                />
+                <span className="w-3 h-3 bg-indigo-500 rounded"></span>
+                <span>Neighborhoods</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={showLandmarks}
+                  onChange={(e) => setShowLandmarks(e.target.checked)}
+                  className="rounded border-gray-300 text-red-600 focus:ring-red-500"
+                />
+                <span className="w-3 h-3 bg-red-500 rounded-full"></span>
+                <span>Landmarks</span>
               </label>
             </div>
           </div>

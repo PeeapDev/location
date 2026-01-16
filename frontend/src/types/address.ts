@@ -14,6 +14,8 @@ export interface Address {
   latitude: number;
   longitude: number;
   accuracy_m?: number;
+  plus_code?: string;
+  plus_code_short?: string;
   street_name?: string;
   block?: string;
   house_number?: string;
@@ -50,6 +52,7 @@ export type VerificationStatus =
 export interface AddressSearchResult {
   pda_id: string;
   postal_code: string;
+  plus_code?: string;
   display_address: string;
   street_name?: string;
   district: string;
@@ -71,6 +74,7 @@ export interface AutocompleteSuggestion {
   display: string;
   pda_id: string;
   postal_code: string;
+  plus_code?: string;
   district: string;
   match_type: string;
 }
@@ -134,4 +138,121 @@ export interface ZoneInfo {
   zone_name?: string;
   district: string;
   region: string;
+}
+
+// Plus Code (Open Location Code) types
+export interface PlusCodeEncodeRequest {
+  latitude: number;
+  longitude: number;
+  precision?: 10 | 11 | 12;
+}
+
+export interface PlusCodeEncodeResponse {
+  plus_code: string;
+  latitude: number;
+  longitude: number;
+  precision_meters: [number, number];
+}
+
+export interface PlusCodeDecodeRequest {
+  plus_code: string;
+  reference_latitude?: number;
+  reference_longitude?: number;
+}
+
+export interface PlusCodeDecodeResponse {
+  plus_code: string;
+  latitude: number;
+  longitude: number;
+  latitude_lo: number;
+  latitude_hi: number;
+  longitude_lo: number;
+  longitude_hi: number;
+  is_full: boolean;
+  is_short: boolean;
+}
+
+// ============================================================================
+// POI (Point of Interest) Types
+// ============================================================================
+
+export type POICategory =
+  | 'healthcare'
+  | 'education'
+  | 'government'
+  | 'finance'
+  | 'food'
+  | 'shopping'
+  | 'tourism'
+  | 'transport'
+  | 'religious'
+  | 'utilities'
+  | 'other';
+
+export interface POI {
+  id: number;
+  osm_id?: number;
+  osm_type?: string;
+  name?: string;
+  name_local?: string;
+  category: POICategory;
+  subcategory?: string;
+  latitude: number;
+  longitude: number;
+  plus_code?: string;
+  plus_code_short?: string;
+  zone_code?: string;
+  street_name?: string;
+  house_number?: string;
+  phone?: string;
+  website?: string;
+  opening_hours?: string;
+  is_verified: boolean;
+  created_at: string;
+  updated_at: string;
+  tags?: Record<string, any>;
+  display_name?: string;
+  district_name?: string;
+  region_name?: string;
+}
+
+export interface POIWithDistance extends POI {
+  distance_m: number;
+}
+
+export interface POIListResponse {
+  pois: POI[];
+  total_count: number;
+  page: number;
+  page_size: number;
+}
+
+export interface POINearbyResponse {
+  pois: POIWithDistance[];
+  total_count: number;
+  center: { latitude: number; longitude: number };
+  radius_m: number;
+}
+
+export interface POICategoryCount {
+  category: string;
+  count: number;
+  subcategories?: { subcategory: string; count: number }[];
+}
+
+export interface POICategoriesResponse {
+  categories: POICategoryCount[];
+  total_pois: number;
+}
+
+export interface POIZoneResponse {
+  zone_code: string;
+  zone_name?: string;
+  district: string;
+  region: string;
+  total_count: number;
+  page: number;
+  page_size: number;
+  pois_by_category: Record<string, POI[]>;
+  pois: POI[];
 }

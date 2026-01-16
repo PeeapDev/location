@@ -17,6 +17,7 @@ export default function AddressDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [copiedPlusCode, setCopiedPlusCode] = useState(false);
 
   useEffect(() => {
     const fetchAddress = async () => {
@@ -273,6 +274,37 @@ export default function AddressDetailPage() {
                 <span className="text-gray-500">Postal Code</span>
                 <span className="font-mono">{address.zone_code}</span>
               </div>
+
+              {/* Plus Code */}
+              {address.plus_code && (
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-500">Plus Code</span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">
+                      {address.plus_code}
+                    </span>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(address.plus_code!);
+                        setCopiedPlusCode(true);
+                        setTimeout(() => setCopiedPlusCode(false), 2000);
+                      }}
+                      className="text-gray-400 hover:text-blue-600 transition"
+                      title="Copy Plus Code"
+                    >
+                      {copiedPlusCode ? (
+                        <svg className="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      ) : (
+                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              )}
 
               <div className="flex items-center justify-between">
                 <span className="text-gray-500">Latitude</span>

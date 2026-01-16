@@ -1,5 +1,6 @@
 """Application configuration and settings."""
 
+from typing import Optional
 from pydantic_settings import BaseSettings
 from functools import lru_cache
 
@@ -21,6 +22,9 @@ class Settings(BaseSettings):
     # Security
     secret_key: str = "xeeno-dev-secret-key-change-in-production"
     api_key_header: str = "X-API-Key"
+
+    # Google Maps API
+    google_maps_api_key: Optional[str] = None
 
     # CORS - allow common development ports
     cors_origins: list[str] = [
@@ -54,6 +58,7 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
+        extra = "ignore"  # Allow extra environment variables
 
 
 @lru_cache()

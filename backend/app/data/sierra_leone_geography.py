@@ -39,42 +39,75 @@ REGIONS = [
 ]
 
 # Districts with their region and chiefdoms/wards
+# Numeric codes follow New Zealand format: XYZZ
+# X = Region (1-5), Y = District (0-9), ZZ = Zone (00-99)
 DISTRICTS = {
     # ============================================
-    # WESTERN AREA (W)
+    # WESTERN AREA (W) - Region 1
     # ============================================
     "Western Area Urban": {
         "region": "W",
         "short_code": "U",
         "full_code": "WU",
+        "numeric_code": "11",  # Postal codes: 1100-1199
         "capital": "Freetown",
         "wards": [
             # Freetown is divided into wards, not chiefdoms
             "East I", "East II", "East III",
             "Central I", "Central II",
             "West I", "West II", "West III",
-        ]
+        ],
+        # OpenStreetMap boundary data (relation id: 3242456)
+        "osm": {
+            "relation_id": 3242456,
+            "admin_level": 5,
+            "wikidata": "Q2085448",
+            "wikipedia": "en:Western Area Urban District",
+            "bounds": {
+                "minlat": 8.3737474,
+                "minlon": -13.2985056,
+                "maxlat": 8.4996239,
+                "maxlon": -13.1746057
+            },
+            "boundary_file": "western_area_osm_boundaries.geojson"
+        }
     },
     "Western Area Rural": {
         "region": "W",
         "short_code": "R",
         "full_code": "WR",
+        "numeric_code": "10",  # Postal codes: 1000-1099
         "capital": "Waterloo",
         "chiefdoms": [
             "Koya Rural",
             "Mountain Rural",
             "Waterloo Rural",
             "York Rural",
-        ]
+        ],
+        # OpenStreetMap boundary data (relation id: 2541225)
+        "osm": {
+            "relation_id": 2541225,
+            "admin_level": 5,
+            "wikidata": "Q2030876",
+            "wikipedia": "en:Western Area Rural District",
+            "bounds": {
+                "minlat": 8.0930302,
+                "minlon": -13.2521295,
+                "maxlat": 8.4699661,
+                "maxlon": -12.9136851
+            },
+            "boundary_file": "western_area_osm_boundaries.geojson"
+        }
     },
 
     # ============================================
-    # NORTHERN PROVINCE (N)
+    # NORTHERN PROVINCE (N) - Region 2
     # ============================================
     "Bombali": {
         "region": "N",
         "short_code": "BO",
         "full_code": "NBO",
+        "numeric_code": "21",  # Postal codes: 2100-2199
         "capital": "Makeni",
         "chiefdoms": [
             "Biriwa", "Bombali Sebora", "Gbanti Kamaranka",
@@ -87,6 +120,7 @@ DISTRICTS = {
         "region": "N",
         "short_code": "FA",
         "full_code": "NFA",
+        "numeric_code": "22",  # Postal codes: 2200-2299
         "capital": "Falaba",
         "chiefdoms": [
             "Delemadugu", "Kabelia", "Kaliere",
@@ -98,6 +132,7 @@ DISTRICTS = {
         "region": "N",
         "short_code": "KO",
         "full_code": "NKO",
+        "numeric_code": "23",  # Postal codes: 2300-2399
         "capital": "Kabala",
         "chiefdoms": [
             "Dembelia Sinkunia", "Diang", "Folosaba Dembelia",
@@ -109,6 +144,7 @@ DISTRICTS = {
         "region": "N",
         "short_code": "TO",
         "full_code": "NTO",
+        "numeric_code": "24",  # Postal codes: 2400-2499
         "capital": "Magburaka",
         "chiefdoms": [
             "Gbonkolenken", "Kafe Simiria", "Kalansogoia",
@@ -121,6 +157,7 @@ DISTRICTS = {
         "region": "N",
         "short_code": "KA",
         "full_code": "NKA",
+        "numeric_code": "25",  # Postal codes: 2500-2599
         "capital": "Kamakwie",
         "chiefdoms": [
             "Bramaia", "Gbinleh Dixing", "Mambolo",
@@ -129,12 +166,13 @@ DISTRICTS = {
     },
 
     # ============================================
-    # NORTH WEST PROVINCE (NW)
+    # NORTH WEST PROVINCE (NW) - Region 3
     # ============================================
     "Kambia": {
         "region": "NW",
         "short_code": "KM",
         "full_code": "NWKM",
+        "numeric_code": "31",  # Postal codes: 3100-3199
         "capital": "Kambia",
         "chiefdoms": [
             "Bramaia", "Gbinleh Dixing", "Magbema",
@@ -145,6 +183,7 @@ DISTRICTS = {
         "region": "NW",
         "short_code": "PL",
         "full_code": "NWPL",
+        "numeric_code": "32",  # Postal codes: 3200-3299
         "capital": "Port Loko",
         "chiefdoms": [
             "Buya Romende", "Dibia", "Kaffu Bullom",
@@ -154,12 +193,13 @@ DISTRICTS = {
     },
 
     # ============================================
-    # SOUTHERN PROVINCE (S)
+    # SOUTHERN PROVINCE (S) - Region 4
     # ============================================
     "Bo": {
         "region": "S",
         "short_code": "BO",
         "full_code": "SBO",
+        "numeric_code": "41",  # Postal codes: 4100-4199
         "capital": "Bo",
         "chiefdoms": [
             "Badjia", "Bagbo", "Bagbwe", "Baoma",
@@ -172,6 +212,7 @@ DISTRICTS = {
         "region": "S",
         "short_code": "BN",
         "full_code": "SBN",
+        "numeric_code": "42",  # Postal codes: 4200-4299
         "capital": "Mattru Jong",
         "chiefdoms": [
             "Bendu Cha", "Bum", "Dema", "Imperri",
@@ -183,6 +224,7 @@ DISTRICTS = {
         "region": "S",
         "short_code": "MO",
         "full_code": "SMO",
+        "numeric_code": "43",  # Postal codes: 4300-4399
         "capital": "Moyamba",
         "chiefdoms": [
             "Bagbo", "Bagruwa", "Banta", "Banta Mokele",
@@ -195,6 +237,7 @@ DISTRICTS = {
         "region": "S",
         "short_code": "PU",
         "full_code": "SPU",
+        "numeric_code": "44",  # Postal codes: 4400-4499
         "capital": "Pujehun",
         "chiefdoms": [
             "Barri", "Gallinas Perri", "Kpaka", "Makpele",
@@ -205,12 +248,13 @@ DISTRICTS = {
     },
 
     # ============================================
-    # EASTERN PROVINCE (E)
+    # EASTERN PROVINCE (E) - Region 5
     # ============================================
     "Kailahun": {
         "region": "E",
         "short_code": "KL",
         "full_code": "EKL",
+        "numeric_code": "51",  # Postal codes: 5100-5199
         "capital": "Kailahun",
         "chiefdoms": [
             "Dea", "Jawei", "Kissi Kama", "Kissi Teng",
@@ -222,6 +266,7 @@ DISTRICTS = {
         "region": "E",
         "short_code": "KE",
         "full_code": "EKE",
+        "numeric_code": "52",  # Postal codes: 5200-5299
         "capital": "Kenema",
         "chiefdoms": [
             "Dama", "Dodo", "Gaura", "Gorama Mende",
@@ -234,6 +279,7 @@ DISTRICTS = {
         "region": "E",
         "short_code": "KN",
         "full_code": "EKN",
+        "numeric_code": "53",  # Postal codes: 5300-5399
         "capital": "Koidu",
         "chiefdoms": [
             "Fiama", "Gbane", "Gbane Kandor", "Gbense",

@@ -3,7 +3,7 @@
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func
+from sqlalchemy import select, func, text
 from geoalchemy2.functions import ST_AsGeoJSON
 
 from app.database import get_db
@@ -24,7 +24,8 @@ router = APIRouter()
 async def list_zones(
     region: Optional[int] = Query(None, ge=1, le=5),
     district: Optional[str] = None,
-    limit: int = Query(100, ge=1, le=500),
+    limit: int = Query(100, ge=1, le=15000),
+    page_size: Optional[int] = Query(None, ge=1, le=15000),  # Alias for frontend compatibility
     offset: int = Query(0, ge=0),
     db: AsyncSession = Depends(get_db)
 ):
@@ -33,6 +34,9 @@ async def list_zones(
 
     Filter by region (1-5) or district name.
     """
+    # Use page_size if provided (for frontend compatibility)
+    actual_limit = page_size if page_size is not None else limit
+
     stmt = select(PostalZone)
 
     if region:
@@ -40,7 +44,7 @@ async def list_zones(
     if district:
         stmt = stmt.where(PostalZone.district_name == district)
 
-    stmt = stmt.order_by(PostalZone.zone_code).offset(offset).limit(limit)
+    stmt = stmt.order_by(PostalZone.zone_code).offset(offset).limit(actual_limit)
 
     result = await db.execute(stmt)
     zones = result.scalars().all()
@@ -270,4 +274,124 @@ async def get_zone_addresses(
             for addr in addresses
         ],
         "total_count": total
+    }
+
+
+@router.get("/lookup/pluscode/{plus_code}")
+async def lookup_by_plus_code(
+    plus_code: str,
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Lookup a postal zone by Plus Code.
+
+    Returns the zone details if found.
+    """
+    # Normalize Plus Code (uppercase)
+    plus_code = plus_code.upper().strip()
+
+    stmt = select(PostalZone).where(PostalZone.plus_code == plus_code)
+    result = await db.execute(stmt)
+    zone = result.scalar_one_or_none()
+
+    if not zone:
+        raise HTTPException(status_code=404, detail=f"No zone found with Plus Code: {plus_code}")
+
+    return {
+        "zone_code": zone.zone_code,
+        "zone_name": zone.zone_name,
+        "district_name": zone.district_name,
+        "region_name": zone.region_name,
+        "segment_type": zone.segment_type,
+        "plus_code": zone.plus_code,
+        "coordinates": {
+            "latitude": zone.center_lat,
+            "longitude": zone.center_lng
+        }
+    }
+
+
+@router.get("/lookup/coordinates")
+async def lookup_by_coordinates(
+    lat: float = Query(..., ge=-90, le=90),
+    lng: float = Query(..., ge=-180, le=180),
+    limit: int = Query(5, ge=1, le=20),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Find nearest postal zones to GPS coordinates.
+
+    Returns zones sorted by distance (nearest first).
+    Useful for drivers to find the correct zone based on their GPS location.
+    """
+    stmt = text("""
+        SELECT zone_code, zone_name, district_name, segment_type, plus_code,
+               center_lat, center_lng,
+               ST_Distance(
+                   geometry::geography,
+                   ST_SetSRID(ST_MakePoint(:lng, :lat), 4326)::geography
+               ) as distance_meters
+        FROM postal_zones
+        WHERE geometry IS NOT NULL
+        ORDER BY geometry <-> ST_SetSRID(ST_MakePoint(:lng, :lat), 4326)
+        LIMIT :limit
+    """)
+
+    result = await db.execute(stmt, {"lat": lat, "lng": lng, "limit": limit})
+    zones = result.fetchall()
+
+    return {
+        "query_coordinates": {"latitude": lat, "longitude": lng},
+        "nearest_zones": [
+            {
+                "zone_code": z[0],
+                "zone_name": z[1],
+                "district_name": z[2],
+                "segment_type": z[3],
+                "plus_code": z[4],
+                "coordinates": {"latitude": z[5], "longitude": z[6]},
+                "distance_meters": round(z[7], 2) if z[7] else None
+            }
+            for z in zones
+        ]
+    }
+
+
+@router.get("/lookup/search")
+async def search_zones(
+    q: str = Query(..., min_length=2),
+    limit: int = Query(20, ge=1, le=100),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Search zones by name, zone code, or Plus Code.
+
+    Useful for finding a specific location.
+    """
+    search_term = f"%{q}%"
+
+    stmt = select(PostalZone).where(
+        (PostalZone.zone_name.ilike(search_term)) |
+        (PostalZone.zone_code.ilike(search_term)) |
+        (PostalZone.plus_code.ilike(search_term)) |
+        (PostalZone.primary_code.ilike(search_term))
+    ).order_by(PostalZone.zone_code).limit(limit)
+
+    result = await db.execute(stmt)
+    zones = result.scalars().all()
+
+    return {
+        "query": q,
+        "results": [
+            {
+                "zone_code": z.zone_code,
+                "zone_name": z.zone_name,
+                "district_name": z.district_name,
+                "segment_type": z.segment_type,
+                "plus_code": z.plus_code,
+                "coordinates": {"latitude": z.center_lat, "longitude": z.center_lng}
+            }
+            for z in zones
+        ],
+        "count": len(zones)
     }

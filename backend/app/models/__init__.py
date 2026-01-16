@@ -9,6 +9,7 @@ from app.models.system_settings import SystemSettings
 from app.models.region import Region
 from app.models.district import District
 from app.models.zone import Zone
+from app.models.poi import POI, POICategory
 
 __all__ = [
     # Geographic hierarchy
@@ -30,4 +31,7 @@ __all__ = [
     # Audit and settings
     "AuditLog",
     "SystemSettings",
+    # POIs
+    "POI",
+    "POICategory",
 ]

@@ -27,11 +27,16 @@ from app.schemas.address import (
     AutocompleteSuggestion,
     ReverseGeocodeResponse,
     NearbyAddress,
-    ZoneInfo
+    ZoneInfo,
+    PlusCodeEncodeRequest,
+    PlusCodeEncodeResponse,
+    PlusCodeDecodeRequest,
+    PlusCodeDecodeResponse
 )
 from app.services.pda_id import PDAIDService
 from app.services.confidence import ConfidenceScorer
 from app.services.geocoder import GeocoderService
+from app.services.plus_code import PlusCodeService
 from app.api.deps import get_current_active_user, get_admin_or_above
 
 router = APIRouter()
@@ -181,6 +186,8 @@ async def approve_address(
         latitude=address.latitude,
         longitude=address.longitude,
         accuracy_m=address.accuracy_m,
+        plus_code=address.plus_code,
+        plus_code_short=address.plus_code_short,
         confidence_score=address.confidence_score,
         verification_status=address.verification_status,
         created_at=address.created_at,
@@ -269,6 +276,7 @@ async def search_addresses(
             results = [AddressSearchResult(
                 pda_id=address.pda_id,
                 postal_code=address.zone_code,
+                plus_code=address.plus_code,
                 display_address=address.display_address,
                 street_name=address.street_name,
                 district=zone.district_name if zone else "",
@@ -359,6 +367,7 @@ async def search_addresses(
         results.append(AddressSearchResult(
             pda_id=address.pda_id,
             postal_code=address.zone_code,
+            plus_code=address.plus_code,
             display_address=address.display_address,
             street_name=address.street_name,
             district=zone.district_name,
@@ -387,22 +396,44 @@ async def autocomplete(
     Get address suggestions for autocomplete.
 
     Returns quick suggestions based on prefix matching.
+    Searches street names, building names, zone names, landmarks, and postal codes.
     """
     start_time = time.time()
     query_text = q.lower().strip()
-    search_pattern = f"{query_text}%"
+    query_upper = q.upper().strip()
+    search_pattern = f"%{query_text}%"  # Contains match for better results
+    prefix_pattern = f"{query_text}%"   # Prefix match
+
+    suggestions = []
+    seen_pda_ids = set()
+
+    # Check if query looks like a Plus Code (contains + or valid Plus Code chars)
+    is_plus_code_search = '+' in query_upper or (
+        len(query_upper) >= 4 and
+        all(c in 'CFGHJMPQRVWX23456789+' for c in query_upper)
+    )
+
+    # Search addresses with zone info
+    search_conditions = [
+        func.lower(Address.street_name).like(search_pattern),
+        func.lower(Address.building_name).like(search_pattern),
+        func.lower(Address.landmark_primary).like(search_pattern),
+        func.lower(PostalZone.zone_name).like(search_pattern),
+        func.lower(PostalZone.district_name).like(search_pattern),
+        Address.zone_code.like(prefix_pattern),
+        PostalZone.primary_code.like(prefix_pattern)
+    ]
+
+    # Add Plus Code search if query looks like a Plus Code
+    if is_plus_code_search:
+        plus_pattern = f"{query_upper}%"
+        search_conditions.append(Address.plus_code.like(plus_pattern))
 
     stmt = (
         select(Address, PostalZone)
         .join(PostalZone, Address.zone_code == PostalZone.zone_code)
-        .where(
-            or_(
-                func.lower(Address.street_name).like(search_pattern),
-                func.lower(Address.building_name).like(search_pattern),
-                Address.zone_code.like(search_pattern)
-            )
-        )
-        .where(Address.verification_status == "verified")
+        .where(or_(*search_conditions))
+        .where(Address.verification_status.in_(["verified", "pending"]))
         .order_by(Address.confidence_score.desc())
         .limit(limit)
     )
@@ -410,13 +441,22 @@ async def autocomplete(
     result = await db.execute(stmt)
     rows = result.all()
 
-    suggestions = []
     for address, zone in rows:
+        if address.pda_id in seen_pda_ids:
+            continue
+        seen_pda_ids.add(address.pda_id)
+
         # Determine match type
-        if address.street_name and address.street_name.lower().startswith(query_text):
+        if address.plus_code and query_upper in address.plus_code:
+            match_type = "plus_code"
+        elif address.street_name and query_text in address.street_name.lower():
             match_type = "street_name"
-        elif address.building_name and address.building_name.lower().startswith(query_text):
+        elif address.building_name and query_text in address.building_name.lower():
             match_type = "building_name"
+        elif address.landmark_primary and query_text in address.landmark_primary.lower():
+            match_type = "landmark"
+        elif zone.zone_name and query_text in zone.zone_name.lower():
+            match_type = "zone_name"
         else:
             match_type = "postal_code"
 
@@ -424,12 +464,42 @@ async def autocomplete(
             display=f"{address.display_address}, {zone.district_name}",
             pda_id=address.pda_id,
             postal_code=address.zone_code,
+            plus_code=address.plus_code,
             district=zone.district_name,
             match_type=match_type
         ))
 
+    # If we don't have enough results, also search zones directly
+    if len(suggestions) < limit:
+        remaining = limit - len(suggestions)
+        zone_stmt = (
+            select(PostalZone)
+            .where(
+                or_(
+                    func.lower(PostalZone.zone_name).like(search_pattern),
+                    func.lower(PostalZone.district_name).like(search_pattern),
+                    PostalZone.zone_code.like(prefix_pattern),
+                    PostalZone.primary_code.like(prefix_pattern)
+                )
+            )
+            .order_by(PostalZone.zone_code)
+            .limit(remaining)
+        )
+        zone_result = await db.execute(zone_stmt)
+        zones = zone_result.scalars().all()
+
+        for zone in zones:
+            # Create a zone-only suggestion (no specific address)
+            suggestions.append(AutocompleteSuggestion(
+                display=f"{zone.zone_name}, {zone.district_name} ({zone.zone_code})",
+                pda_id=f"ZONE-{zone.zone_code}",  # Special identifier for zones
+                postal_code=zone.zone_code,
+                district=zone.district_name,
+                match_type="zone"
+            ))
+
     return AutocompleteResponse(
-        suggestions=suggestions,
+        suggestions=suggestions[:limit],
         query_time_ms=int((time.time() - start_time) * 1000)
     )
 
@@ -468,6 +538,8 @@ async def get_address(
         latitude=address.latitude,
         longitude=address.longitude,
         accuracy_m=address.accuracy_m,
+        plus_code=address.plus_code,
+        plus_code_short=address.plus_code_short,
         confidence_score=address.confidence_score,
         verification_status=address.verification_status,
         created_at=address.created_at,
@@ -513,6 +585,10 @@ async def register_address(
         delivery_instructions=data.delivery_instructions
     )
 
+    # Generate Plus Code from coordinates
+    plus_code = PlusCodeService.encode(data.latitude, data.longitude, code_length=11)
+    plus_code_short = plus_code[-6:] if plus_code else None  # Last 6 chars as short form
+
     # Create address
     from geoalchemy2.shape import from_shape
     from shapely.geometry import Point
@@ -526,6 +602,8 @@ async def register_address(
         latitude=data.latitude,
         longitude=data.longitude,
         accuracy_m=data.accuracy_m,
+        plus_code=plus_code,
+        plus_code_short=plus_code_short,
         street_name=data.street_name,
         block=data.block,
         house_number=data.house_number,
@@ -579,6 +657,8 @@ async def register_address(
         latitude=address.latitude,
         longitude=address.longitude,
         accuracy_m=address.accuracy_m,
+        plus_code=address.plus_code,
+        plus_code_short=address.plus_code_short,
         confidence_score=address.confidence_score,
         verification_status=address.verification_status,
         created_at=address.created_at,
@@ -736,4 +816,158 @@ async def resolve_location(
         exact_match=exact,
         nearest_addresses=nearest,
         zone=zone
+    )
+
+
+# =============================================================================
+# Plus Code (Open Location Code) Endpoints
+# =============================================================================
+
+@router.post("/pluscode/encode", response_model=PlusCodeEncodeResponse)
+async def encode_plus_code(request: PlusCodeEncodeRequest):
+    """
+    Encode coordinates to a Plus Code.
+
+    Plus Codes are universal location identifiers derived from coordinates.
+    No API calls needed - works algorithmically.
+
+    Precision levels:
+    - 10: ~14m x 14m area
+    - 11: ~3m x 3m area (default, recommended)
+    - 12: ~1m x 1m area
+    """
+    try:
+        plus_code = PlusCodeService.encode(
+            request.latitude,
+            request.longitude,
+            request.precision
+        )
+        precision_m = PlusCodeService.get_precision_meters(request.precision)
+
+        return PlusCodeEncodeResponse(
+            plus_code=plus_code,
+            latitude=request.latitude,
+            longitude=request.longitude,
+            precision_meters=precision_m
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.post("/pluscode/decode", response_model=PlusCodeDecodeResponse)
+async def decode_plus_code(request: PlusCodeDecodeRequest):
+    """
+    Decode a Plus Code to coordinates.
+
+    For short codes (e.g., "VX22+5WX"), provide reference coordinates
+    to recover the full code. If not provided, defaults to Freetown center.
+    """
+    plus_code = request.plus_code.upper().strip()
+
+    if not PlusCodeService.is_valid(plus_code):
+        raise HTTPException(status_code=400, detail="Invalid Plus Code format")
+
+    was_short = PlusCodeService.is_short(plus_code)
+
+    # Recover full code if short
+    if was_short:
+        ref_lat = request.reference_latitude or PlusCodeService.DEFAULT_REF_LAT
+        ref_lon = request.reference_longitude or PlusCodeService.DEFAULT_REF_LON
+        plus_code = PlusCodeService.recover_nearest(plus_code, ref_lat, ref_lon)
+
+    try:
+        decoded = PlusCodeService.decode(plus_code)
+
+        return PlusCodeDecodeResponse(
+            plus_code=plus_code,
+            latitude=decoded["latitude"],
+            longitude=decoded["longitude"],
+            latitude_lo=decoded["latitude_lo"],
+            latitude_hi=decoded["latitude_hi"],
+            longitude_lo=decoded["longitude_lo"],
+            longitude_hi=decoded["longitude_hi"],
+            is_full=True,
+            is_short=was_short
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.get("/pluscode/{plus_code}")
+async def get_address_by_plus_code(
+    plus_code: str,
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Get address by Plus Code.
+
+    Supports both full and short Plus Codes.
+    Returns the address if found, or suggestions for nearby addresses.
+    """
+    normalized_code = plus_code.upper().strip()
+
+    if not PlusCodeService.is_valid(normalized_code):
+        raise HTTPException(status_code=400, detail="Invalid Plus Code format")
+
+    # If short code, recover full code first
+    if PlusCodeService.is_short(normalized_code):
+        normalized_code = PlusCodeService.recover_nearest(
+            normalized_code,
+            PlusCodeService.DEFAULT_REF_LAT,
+            PlusCodeService.DEFAULT_REF_LON
+        )
+
+    # Search by exact match
+    stmt = select(Address).where(Address.plus_code == normalized_code)
+    result = await db.execute(stmt)
+    address = result.scalar_one_or_none()
+
+    if address:
+        return AddressResponse(
+            pda_id=address.pda_id,
+            zone_code=address.zone_code,
+            street_name=address.street_name,
+            block=address.block,
+            house_number=address.house_number,
+            building_name=address.building_name,
+            floor=address.floor,
+            unit=address.unit,
+            landmark_primary=address.landmark_primary,
+            landmark_secondary=address.landmark_secondary,
+            delivery_instructions=address.delivery_instructions,
+            access_notes=address.access_notes,
+            address_type=address.address_type,
+            contact_phone=address.contact_phone,
+            latitude=address.latitude,
+            longitude=address.longitude,
+            accuracy_m=address.accuracy_m,
+            plus_code=address.plus_code,
+            plus_code_short=address.plus_code_short,
+            confidence_score=address.confidence_score,
+            verification_status=address.verification_status,
+            created_at=address.created_at,
+            updated_at=address.updated_at,
+            display_address=address.display_address
+        )
+
+    # If no exact match, decode Plus Code and search by coordinates
+    decoded = PlusCodeService.decode(normalized_code)
+    nearby = await GeocoderService.reverse_geocode(
+        db, decoded["latitude"], decoded["longitude"], radius_m=50
+    )
+
+    if nearby.get("nearest_addresses"):
+        return {
+            "message": "No exact match found",
+            "plus_code": normalized_code,
+            "decoded_location": {
+                "latitude": decoded["latitude"],
+                "longitude": decoded["longitude"]
+            },
+            "nearby_addresses": nearby["nearest_addresses"][:3]
+        }
+
+    raise HTTPException(
+        status_code=404,
+        detail=f"No address found for Plus Code {plus_code}"
     )

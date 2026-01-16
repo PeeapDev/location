@@ -120,7 +120,7 @@ curl -X POST '${API_BASE}/api/v1/address/search' \\
   -d '{"query": "123 Main Street", "limit": 10}'
 
 # Get address by PDA-ID
-curl '${API_BASE}/api/v1/address/SL-FRE-001-000001-A' \\
+curl '${API_BASE}/api/v1/address/SL-1100-001-000001-7' \\
   -H 'X-API-Key: xeeno_sk_your_api_key'
 
 # Register a new address

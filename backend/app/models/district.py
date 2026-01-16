@@ -31,8 +31,13 @@ class District(Base):
     # System-assigned code (0-9 within region)
     code = Column(String(1), nullable=False)
 
-    # Full code combining region and district (e.g., "WU", "NBO", "NWPL")
+    # Full code combining region and district (e.g., "WU", "NBO", "NWPL") - legacy
     full_code = Column(String(10), unique=True, nullable=False, index=True)
+
+    # Numeric base code for postal codes (e.g., 11 for Western Urban = 1100-1199)
+    # Format: XY where X=region(1-5), Y=district(0-9)
+    # Zone codes will be XYZZ where ZZ is zone number (00-99)
+    numeric_code = Column(String(2), nullable=True, index=True)
 
     # Human-defined fields
     name = Column(String(100), nullable=False)

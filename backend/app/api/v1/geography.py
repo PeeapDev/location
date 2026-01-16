@@ -753,8 +753,22 @@ async def create_zone(
             detail="Maximum number of zones (100) reached for this district",
         )
 
-    zone_number = f"{next_num:02d}"
-    primary_code = f"{district.full_code}{zone_number}"
+    zone_number = f"{next_num:03d}"
+
+    # Generate numeric postal code (New Zealand style)
+    # Format: XYZZ where X=region, Y=district, ZZ=zone
+    if district.numeric_code:
+        # Use the district's numeric code (e.g., "11" for Western Urban)
+        primary_code = f"{district.numeric_code}{next_num:02d}"
+    else:
+        # Fallback: Calculate from region and district codes
+        # Region code (1-5) + District code (0-9) + Zone number (00-99)
+        region_num = 1  # Default to Western Area
+        if district.region:
+            region_map = {"W": 1, "N": 2, "NW": 3, "S": 4, "E": 5}
+            region_num = region_map.get(district.region.code, 1)
+        district_num = int(district.code) if district.code.isdigit() else 0
+        primary_code = f"{region_num}{district_num}{next_num:02d}"
 
     # Handle geometry if provided
     geometry = None

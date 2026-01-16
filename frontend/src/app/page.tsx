@@ -109,7 +109,7 @@ export default function HomePage() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
-                  placeholder="Search for an address, street, or PDA-ID..."
+                  placeholder="Search for an address, street, PDA-ID, or Plus Code..."
                   className="w-full px-6 py-4 bg-white rounded-xl shadow-lg border-0 focus:ring-2 focus:ring-xeeno-primary/50 outline-none text-slate-700 placeholder-slate-400 transition-shadow duration-300"
                 />
                 <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
@@ -137,6 +137,9 @@ export default function HomePage() {
                     <div className="font-medium text-slate-800">{suggestion.display}</div>
                     <div className="text-sm text-slate-500 flex items-center gap-2 mt-1">
                       <span className="font-mono text-xs bg-slate-100 px-2 py-0.5 rounded">{suggestion.postal_code}</span>
+                      {suggestion.plus_code && (
+                        <span className="font-mono text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded">{suggestion.plus_code.slice(-6)}</span>
+                      )}
                       <span>{suggestion.district}</span>
                     </div>
                   </div>
