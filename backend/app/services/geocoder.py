@@ -149,6 +149,9 @@ class GeocoderService:
         """
         Find the postal zone containing a point.
 
+        First tries to find by geometry containment, then falls back
+        to finding the nearest zone by center point.
+
         Args:
             db: Database session
             latitude: Latitude
@@ -162,9 +165,49 @@ class GeocoderService:
 
         point = func.ST_SetSRID(func.ST_MakePoint(longitude, latitude), 4326)
 
+        # First try: Find zone whose geometry contains the point
         stmt = (
             select(PostalZone)
+            .where(PostalZone.geometry.isnot(None))
             .where(func.ST_Contains(PostalZone.geometry, point))
+            .limit(1)
+        )
+
+        result = await db.execute(stmt)
+        zone = result.scalar_one_or_none()
+
+        if zone:
+            return zone
+
+        # Fallback: Find nearest zone by center point (within 2km)
+        # This works for zones without geometry
+        from sqlalchemy import cast, Float
+        from math import radians, cos, sin, sqrt, atan2
+
+        # Simple distance calculation using center_lat/center_lng
+        # Using Haversine approximation via SQL
+        lat_rad = func.radians(latitude)
+        lng_rad = func.radians(longitude)
+
+        zone_lat_rad = func.radians(cast(PostalZone.center_lat, Float))
+        zone_lng_rad = func.radians(cast(PostalZone.center_lng, Float))
+
+        # Haversine formula components
+        dlat = zone_lat_rad - lat_rad
+        dlng = zone_lng_rad - lng_rad
+
+        a = func.power(func.sin(dlat / 2), 2) + \
+            func.cos(lat_rad) * func.cos(zone_lat_rad) * \
+            func.power(func.sin(dlng / 2), 2)
+
+        # Distance in meters (Earth radius = 6371000m)
+        distance = 2 * 6371000 * func.asin(func.sqrt(a))
+
+        stmt = (
+            select(PostalZone)
+            .where(PostalZone.center_lat.isnot(None))
+            .where(PostalZone.center_lng.isnot(None))
+            .order_by(distance)
             .limit(1)
         )
 
