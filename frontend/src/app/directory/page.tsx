@@ -65,7 +65,7 @@ export default function DirectoryPage() {
   const [totalPois, setTotalPois] = useState(0);
   const [poiPage, setPoiPage] = useState(1);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
   // Zone Lookup state
@@ -86,13 +86,20 @@ export default function DirectoryPage() {
   const [regError, setRegError] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
 
-  // Load zones from API
+  // Load data lazily based on active tab
   useEffect(() => {
-    loadZones();
-    loadAddresses();
-    loadPois();
-    loadPoiCategories();
-  }, []);
+    // Only load data when the relevant tab is active
+    if (activeTab === 'zones' && zones.length === 0) {
+      loadZones();
+    }
+    if (activeTab === 'addresses' && addresses.length === 0) {
+      loadAddresses();
+    }
+    if (activeTab === 'pois' && pois.length === 0) {
+      loadPois();
+      loadPoiCategories();
+    }
+  }, [activeTab]);
 
   const loadZones = async () => {
     try {
