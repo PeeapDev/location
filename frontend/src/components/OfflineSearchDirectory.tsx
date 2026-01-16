@@ -23,6 +23,7 @@ export default function OfflineSearchDirectory({ onSelectZone }: OfflineSearchDi
     results,
     isLoading,
     isOffline,
+    isSearchReady,
     error,
     search,
     searchNearby,
@@ -159,11 +160,21 @@ export default function OfflineSearchDirectory({ onSelectZone }: OfflineSearchDi
               )}
             </div>
 
-            {/* Offline notice */}
+            {/* Status notice */}
+            {syncStatus.status === 'syncing' && !isSearchReady && (
+              <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-800 flex items-center gap-2">
+                <div className="animate-spin h-4 w-4 border-2 border-blue-500 border-t-transparent rounded-full" />
+                <span>{syncStatus.message || 'Loading zones...'}</span>
+              </div>
+            )}
+            {isSearchReady && syncStatus.status === 'syncing' && (
+              <div className="mb-4 p-2 bg-green-50 border border-green-200 rounded-lg text-xs text-green-700">
+                Search ready with {dbStats.zones.toLocaleString()} zones. Background sync: {syncStatus.message}
+              </div>
+            )}
             {isOffline && (
               <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
-                <strong>Offline Mode:</strong> Searching {dbStats.zones.toLocaleString()} cached zones.
-                Connect to internet to sync latest data.
+                <strong>Offline Mode:</strong> Searching {dbStats.zones.toLocaleString()} zones locally.
               </div>
             )}
           </>
@@ -317,24 +328,46 @@ export default function OfflineSearchDirectory({ onSelectZone }: OfflineSearchDi
         {/* Empty state */}
         {!query && results.length === 0 && searchMode === 'text' && (
           <div className="text-center py-8 text-gray-500">
-            <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <p className="mt-2">Enter a search term to find postal zones</p>
-            <div className="mt-4 text-sm">
-              <p>Try searching for:</p>
-              <div className="mt-2 flex flex-wrap justify-center gap-2">
-                {['Central Freetown', '1100', 'Lumley', 'Bo City'].map(term => (
-                  <button
-                    key={term}
-                    onClick={() => handleInputChange(term)}
-                    className="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-gray-700"
-                  >
-                    {term}
-                  </button>
-                ))}
-              </div>
-            </div>
+            {!isSearchReady ? (
+              <>
+                <div className="animate-spin mx-auto h-12 w-12 border-4 border-indigo-500 border-t-transparent rounded-full" />
+                <p className="mt-4 font-medium text-gray-700">{syncStatus.message || 'Loading zones...'}</p>
+                <p className="mt-1 text-sm">Search will be ready shortly</p>
+                {syncStatus.progress > 0 && (
+                  <div className="mt-4 max-w-xs mx-auto">
+                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-indigo-500 transition-all duration-300"
+                        style={{ width: `${syncStatus.progress}%` }}
+                      />
+                    </div>
+                    <p className="mt-1 text-xs">{syncStatus.progress}%</p>
+                  </div>
+                )}
+              </>
+            ) : (
+              <>
+                <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <p className="mt-2">Enter a search term to find postal zones</p>
+                <p className="mt-1 text-xs text-green-600">{dbStats.zones.toLocaleString()} zones ready</p>
+                <div className="mt-4 text-sm">
+                  <p>Try searching for:</p>
+                  <div className="mt-2 flex flex-wrap justify-center gap-2">
+                    {['Central Freetown', '1100', 'Lumley', 'Bo City'].map(term => (
+                      <button
+                        key={term}
+                        onClick={() => handleInputChange(term)}
+                        className="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-gray-700"
+                      >
+                        {term}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         )}
       </div>

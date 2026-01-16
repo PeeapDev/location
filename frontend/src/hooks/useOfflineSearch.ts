@@ -30,6 +30,7 @@ export interface UseOfflineSearchResult {
   results: SearchResult[];
   isLoading: boolean;
   isOffline: boolean;
+  isSearchReady: boolean;
   error: string | null;
   search: (query: string) => Promise<void>;
   searchNearby: (lat: number, lng: number, radius?: number) => Promise<void>;
@@ -264,6 +265,7 @@ export function useOfflineSearch(): UseOfflineSearchResult {
     results,
     isLoading,
     isOffline,
+    isSearchReady: syncStatus.isSearchReady ?? dbStats.zones > 0,
     error,
     search,
     searchNearby,

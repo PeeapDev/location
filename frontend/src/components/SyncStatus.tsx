@@ -59,6 +59,7 @@ export default function SyncStatus({ compact = false, showStats = true }: SyncSt
   const getStatusColor = () => {
     switch (syncProgress.status) {
       case 'complete': return 'bg-green-500';
+      case 'ready': return 'bg-green-500';
       case 'syncing': return 'bg-blue-500 animate-pulse';
       case 'error': return 'bg-red-500';
       case 'offline': return 'bg-yellow-500';
@@ -69,6 +70,7 @@ export default function SyncStatus({ compact = false, showStats = true }: SyncSt
   const getStatusIcon = () => {
     switch (syncProgress.status) {
       case 'complete':
+      case 'ready':
         return (
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -131,7 +133,8 @@ export default function SyncStatus({ compact = false, showStats = true }: SyncSt
             <div className="font-medium text-gray-900">
               {syncProgress.status === 'offline' ? 'Offline Mode' :
                syncProgress.status === 'syncing' ? 'Syncing...' :
-               syncProgress.status === 'complete' ? 'Data Ready' :
+               syncProgress.status === 'complete' ? 'All Synced' :
+               syncProgress.status === 'ready' ? 'Search Ready' :
                syncProgress.status === 'error' ? 'Sync Error' : 'Ready'}
             </div>
             <div className="text-xs text-gray-500">
