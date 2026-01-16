@@ -1,0 +1,78 @@
+zone_code,postal_code,zone_name,district_name,region_name,segment_type,centroid_lat,centroid_lon,bbox_min_lat,bbox_max_lat,bbox_min_lon,bbox_max_lon
+1000-001,1000,Waterloo Town,Western Area Rural,Western Area,mixed,8.3326,-13.0604,8.318,8.35,-13.075,-13.045
+1000-002,1000,Waterloo Junction,Western Area Rural,Western Area,commercial,8.329,-13.0576,8.318,8.342,-13.068,-13.045
+1001-001,1001,Newton,Western Area Rural,Western Area,residential,8.3644,-13.0768,8.35,8.38,-13.092,-13.062
+1002-001,1002,Hastings,Western Area Rural,Western Area,residential,8.374,-13.1252,8.36,8.39,-13.14,-13.11
+1003-001,1003,Grafton,Western Area Rural,Western Area,residential,8.389,-13.1468,8.375,8.405,-13.16,-13.132
+1004-001,1004,Regent,Western Area Rural,Western Area,residential,8.414,-13.2116,8.4,8.43,-13.225,-13.198
+1005-001,1005,Leicester,Western Area Rural,Western Area,residential,8.439,-13.1964,8.425,8.455,-13.21,-13.182
+1006-001,1006,Gloucester,Western Area Rural,Western Area,residential,8.434,-13.2216,8.42,8.45,-13.235,-13.208
+1007-001,1007,York,Western Area Rural,Western Area,residential,8.359,-13.2942,8.345,8.375,-13.308,-13.28
+1008-001,1008,Tombo,Western Area Rural,Western Area,residential,8.209,-13.1042,8.195,8.225,-13.118,-13.09
+1100-001,1100,Central Freetown CBD,Western Area Urban,Western Area,commercial,8.4787,-13.2283,8.468,8.492,-13.24,-13.215
+1100-002,1100,Tower Hill,Western Area Urban,Western Area,government,8.4818,-13.229,8.475,8.49,-13.238,-13.222
+1100-003,1100,Siaka Stevens Street,Western Area Urban,Western Area,commercial,8.477,-13.226,8.47,8.485,-13.235,-13.218
+1101-001,1101,Cline Town,Western Area Urban,Western Area,mixed,8.4774,-13.1987,8.465,8.492,-13.212,-13.185
+1101-002,1101,East End,Western Area Urban,Western Area,residential,8.4842,-13.195,8.475,8.495,-13.205,-13.185
+1101-003,1101,Fourah Bay,Western Area Urban,Western Area,mixed,8.4886,-13.205,8.48,8.498,-13.215,-13.195
+1102-001,1102,Congo Town,Western Area Urban,Western Area,residential,8.4912,-13.212,8.482,8.502,-13.225,-13.2
+1102-002,1102,Foulah Town,Western Area Urban,Western Area,residential,8.4868,-13.221,8.48,8.498,-13.232,-13.21
+1102-003,1102,Murray Town,Western Area Urban,Western Area,residential,8.4676,-13.266,8.455,8.48,-13.278,-13.255
+1103-001,1103,Brookfields,Western Area Urban,Western Area,residential,8.46,-13.246,8.448,8.472,-13.258,-13.235
+1103-002,1103,New England,Western Area Urban,Western Area,residential,8.4676,-13.2402,8.458,8.48,-13.25,-13.23
+1103-003,1103,Tengbeh Town,Western Area Urban,Western Area,residential,8.4776,-13.2434,8.465,8.49,-13.255,-13.232
+1104-001,1104,Hill Station,Western Area Urban,Western Area,residential,8.4536,-13.2644,8.438,8.465,-13.278,-13.252
+1104-002,1104,Wilberforce,Western Area Urban,Western Area,residential,8.4416,-13.2706,8.428,8.455,-13.282,-13.258
+1104-003,1104,Signal Hill,Western Area Urban,Western Area,residential,8.437,-13.278,8.425,8.45,-13.29,-13.265
+1105-001,1105,Lumley,Western Area Urban,Western Area,mixed,8.4316,-13.286,8.418,8.445,-13.298,-13.275
+1105-002,1105,Aberdeen,Western Area Urban,Western Area,mixed,8.4184,-13.2934,8.405,8.432,-13.305,-13.282
+1105-003,1105,Cockle Bay,Western Area Urban,Western Area,residential,8.4112,-13.308,8.398,8.425,-13.32,-13.295
+1106-001,1106,Goderich,Western Area Urban,Western Area,residential,8.4058,-13.318,8.392,8.42,-13.33,-13.305
+1106-002,1106,Juba,Western Area Urban,Western Area,residential,8.4446,-13.302,8.432,8.458,-13.315,-13.29
+1106-003,1106,Lakka,Western Area Urban,Western Area,residential,8.3884,-13.328,8.375,8.402,-13.34,-13.315
+1107-001,1107,Kissy,Western Area Urban,Western Area,residential,8.487,-13.183,8.472,8.5,-13.198,-13.172
+1107-002,1107,Kissy Brook,Western Area Urban,Western Area,residential,8.472,-13.179,8.458,8.485,-13.192,-13.168
+1107-003,1107,Kissy Mess Mess,Western Area Urban,Western Area,residential,8.4554,-13.1734,8.442,8.468,-13.185,-13.162
+1108-001,1108,Wellington,Western Area Urban,Western Area,residential,8.487,-13.1626,8.472,8.5,-13.178,-13.15
+1108-002,1108,Portee,Western Area Urban,Western Area,residential,8.4916,-13.1556,8.478,8.505,-13.168,-13.142
+1109-001,1109,Calaba Town,Western Area Urban,Western Area,residential,8.4994,-13.1452,8.485,8.512,-13.158,-13.132
+1109-002,1109,Allen Town,Western Area Urban,Western Area,residential,8.5042,-13.1348,8.49,8.518,-13.148,-13.122
+1110-001,1110,Kingtom,Western Area Urban,Western Area,mixed,8.48,-13.256,8.468,8.492,-13.268,-13.245
+1110-002,1110,Kroo Town,Western Area Urban,Western Area,residential,8.4976,-13.207,8.485,8.51,-13.22,-13.195
+2100-001,2100,Makeni City Center,Bombali,Northern Province,commercial,8.889,-12.0504,8.875,8.905,-12.065,-12.035
+2100-002,2100,Makeni Teko,Bombali,Northern Province,residential,8.875,-12.0446,8.862,8.89,-12.058,-12.03
+2101-001,2101,Kamabai,Bombali,Northern Province,residential,9.1126,-12.1676,9.1,9.128,-12.182,-12.152
+2102-001,2102,Binkolo,Bombali,Northern Province,residential,9.0074,-12.0334,8.995,9.022,-12.048,-12.018
+2200-001,2200,Falaba Town,Falaba,Northern Province,mixed,9.8558,-11.3176,9.842,9.872,-11.332,-11.302
+2201-001,2201,Mongo,Falaba,Northern Province,residential,9.769,-11.3034,9.755,9.785,-11.318,-11.288
+2300-001,2300,Kabala Town,Koinadugu,Northern Province,mixed,9.589,-11.5504,9.575,9.605,-11.565,-11.535
+2301-001,2301,Yogomaia,Koinadugu,Northern Province,residential,9.5126,-11.4656,9.5,9.528,-11.48,-11.45
+2400-001,2400,Magburaka Town,Tonkolili,Northern Province,mixed,8.719,-11.9504,8.705,8.735,-11.965,-11.935
+2401-001,2401,Yele,Tonkolili,Northern Province,residential,8.539,-11.8304,8.525,8.555,-11.845,-11.815
+2402-001,2402,Mile 91,Tonkolili,Northern Province,commercial,8.4626,-12.0834,8.45,8.478,-12.098,-12.068
+2500-001,2500,Kamakwie,Karene,Northern Province,mixed,9.4926,-12.2334,9.48,9.508,-12.248,-12.218
+3100-001,3100,Kambia Town,Kambia,North West Province,mixed,9.1258,-12.9176,9.112,9.142,-12.932,-12.902
+3101-001,3101,Rokupr,Kambia,North West Province,residential,9.0358,-12.9504,9.022,9.052,-12.965,-12.935
+3200-001,3200,Port Loko Town,Port Loko,North West Province,mixed,8.769,-12.7834,8.755,8.785,-12.798,-12.768
+3201-001,3201,Lunsar,Port Loko,North West Province,commercial,8.6826,-12.5334,8.67,8.698,-12.548,-12.518
+3202-001,3202,Lungi,Port Loko,North West Province,mixed,8.6126,-13.1904,8.6,8.628,-13.205,-13.175
+4100-001,4100,Bo City Center,Bo,Southern Province,commercial,7.9658,-11.7376,7.952,7.982,-11.752,-11.722
+4100-002,4100,Bo New London,Bo,Southern Province,residential,7.9526,-11.7304,7.94,7.968,-11.745,-11.715
+4101-001,4101,Koribondo,Bo,Southern Province,residential,7.7058,-11.5334,7.692,7.722,-11.548,-11.518
+4200-001,4200,Bonthe Town,Bonthe,Southern Province,mixed,7.5358,-12.5004,7.522,7.552,-12.515,-12.485
+4201-001,4201,Mattru Jong,Bonthe,Southern Province,mixed,7.6226,-11.8334,7.61,7.638,-11.848,-11.818
+4300-001,4300,Moyamba Town,Moyamba,Southern Province,mixed,8.1626,-12.4304,8.15,8.178,-12.445,-12.415
+4301-001,4301,Shenge,Moyamba,Southern Province,residential,7.8858,-12.7876,7.872,7.902,-12.802,-12.772
+4400-001,4400,Pujehun Town,Pujehun,Southern Province,mixed,7.3526,-11.7176,7.34,7.368,-11.732,-11.702
+4401-001,4401,Zimmi,Pujehun,Southern Province,residential,7.2926,-11.3576,7.28,7.308,-11.372,-11.342
+5100-001,5100,Kailahun Town,Kailahun,Eastern Province,mixed,8.279,-10.5734,8.265,8.295,-10.588,-10.558
+5101-001,5101,Pendembu,Kailahun,Eastern Province,residential,8.0926,-10.7034,8.08,8.108,-10.718,-10.688
+5102-001,5102,Segbwema,Kailahun,Eastern Province,residential,7.9926,-10.9434,7.98,8.008,-10.958,-10.928
+5200-001,5200,Kenema City Center,Kenema,Eastern Province,commercial,7.879,-11.1904,7.865,7.895,-11.205,-11.175
+5200-002,5200,Kenema Nyandehun,Kenema,Eastern Province,residential,7.8646,-11.1834,7.852,7.88,-11.198,-11.168
+5201-001,5201,Blama,Kenema,Eastern Province,residential,7.8826,-11.1304,7.87,7.898,-11.145,-11.115
+5202-001,5202,Panguma,Kenema,Eastern Province,residential,8.0026,-11.1634,7.99,8.018,-11.178,-11.148
+5300-001,5300,Koidu City Center,Kono,Eastern Province,commercial,8.6458,-10.9676,8.632,8.662,-10.982,-10.952
+5300-002,5300,Koidu New Sembehun,Kono,Eastern Province,residential,8.6326,-10.9604,8.62,8.648,-10.975,-10.945
+5301-001,5301,Yengema,Kono,Eastern Province,residential,8.5926,-10.9834,8.58,8.608,-10.998,-10.968
+5302-001,5302,Tombodu,Kono,Eastern Province,residential,8.7058,-10.8434,8.692,8.722,-10.858,-10.828

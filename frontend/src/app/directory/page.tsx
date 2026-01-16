@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import OfflineSearchDirectory from '@/components/OfflineSearchDirectory';
 import SyncStatus from '@/components/SyncStatus';
+import AddressRegistration from '@/components/AddressRegistration';
 import { useOffline } from '@/components/ServiceWorkerProvider';
 
 // Types
@@ -883,127 +884,7 @@ export default function DirectoryPage() {
 
         {/* Register Tab */}
         {activeTab === 'register' && (
-          <div className="max-w-2xl mx-auto">
-            <div className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-xl font-semibold mb-4">Register New Address</h2>
-              <p className="text-gray-600 mb-6">
-                Register a new physical address to receive a unique PDA-ID and postal code.
-              </p>
-
-              <form onSubmit={handleRegister} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Latitude *
-                    </label>
-                    <input
-                      type="text"
-                      value={regForm.latitude}
-                      onChange={(e) => setRegForm(prev => ({ ...prev, latitude: e.target.value }))}
-                      placeholder="e.g., 8.479"
-                      required
-                      className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Longitude *
-                    </label>
-                    <input
-                      type="text"
-                      value={regForm.longitude}
-                      onChange={(e) => setRegForm(prev => ({ ...prev, longitude: e.target.value }))}
-                      placeholder="e.g., -13.227"
-                      required
-                      className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                    />
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => useCurrentLocation(false)}
-                  className="text-indigo-600 hover:text-indigo-800 text-sm font-medium"
-                >
-                  Use my current location
-                </button>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Street Address
-                  </label>
-                  <input
-                    type="text"
-                    value={regForm.street_address}
-                    onChange={(e) => setRegForm(prev => ({ ...prev, street_address: e.target.value }))}
-                    placeholder="e.g., 15 Siaka Stevens Street"
-                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Building Name
-                  </label>
-                  <input
-                    type="text"
-                    value={regForm.building_name}
-                    onChange={(e) => setRegForm(prev => ({ ...prev, building_name: e.target.value }))}
-                    placeholder="e.g., State House"
-                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Nearest Landmark
-                  </label>
-                  <input
-                    type="text"
-                    value={regForm.landmark}
-                    onChange={(e) => setRegForm(prev => ({ ...prev, landmark: e.target.value }))}
-                    placeholder="e.g., Near Cotton Tree"
-                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={isRegistering}
-                  className="w-full bg-indigo-600 text-white px-4 py-3 rounded-lg hover:bg-indigo-700 font-medium disabled:opacity-50"
-                >
-                  {isRegistering ? 'Registering...' : 'Register Address'}
-                </button>
-
-                {regError && (
-                  <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
-                    {regError}
-                  </div>
-                )}
-
-                {regResult && (
-                  <div className="p-6 bg-green-50 border border-green-200 rounded-lg">
-                    <div className="text-center">
-                      <svg className="mx-auto h-12 w-12 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      <h3 className="mt-2 text-lg font-medium text-green-900">Address Registered!</h3>
-                      <div className="mt-4 p-4 bg-white rounded-lg">
-                        <div className="text-sm text-gray-600">Your PDA-ID</div>
-                        <div className="text-2xl font-mono font-bold text-indigo-600 mt-1">
-                          {regResult.pda_id}
-                        </div>
-                        <div className="text-sm text-gray-600 mt-2">Postal Code</div>
-                        <div className="text-3xl font-bold text-gray-900">
-                          {regResult.postal_code}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </form>
-            </div>
-          </div>
+          <AddressRegistration />
         )}
       </div>
 

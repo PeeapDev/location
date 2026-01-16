@@ -1,0 +1,131 @@
+postal_code,zone_name,area_type,district,latitude,longitude,description
+1000,Waterloo Central,mixed,Western Area Rural,8.3330,-13.0600,Waterloo town center
+1001,Waterloo Junction,commercial,Western Area Rural,8.3290,-13.0576,Waterloo transport hub
+1002,Benguema,residential,Western Area Rural,8.3350,-13.0550,Benguema area including barracks
+1003,Jui,mixed,Western Area Rural,8.3400,-13.0700,Jui community
+1004,Kossoh Town,residential,Western Area Rural,8.3360,-13.0590,Kossoh Town area
+1005,Newton,residential,Western Area Rural,8.3644,-13.0768,Newton village
+1006,Hastings,residential,Western Area Rural,8.3740,-13.1252,Hastings including airfield area
+1007,Grafton,residential,Western Area Rural,8.3890,-13.1468,Grafton village
+1008,Regent,residential,Western Area Rural,8.4140,-13.2116,Regent village
+1009,Leicester,residential,Western Area Rural,8.4390,-13.1964,Leicester village
+1010,Gloucester,residential,Western Area Rural,8.4340,-13.2216,Gloucester village
+1011,York,residential,Western Area Rural,8.3590,-13.2942,York village
+1012,Kent,residential,Western Area Rural,8.3580,-13.2935,Kent village
+1013,Tombo,residential,Western Area Rural,8.2090,-13.1042,Tombo fishing community
+1014,Devil Hole,residential,Western Area Rural,8.3310,-13.0620,Devil Hole area
+1015,Rokel,residential,Western Area Rural,8.3345,-13.0560,Rokel area
+1016,Adonkia,residential,Western Area Rural,8.3350,-13.0620,Adonkia community
+1017,Songo,residential,Western Area Rural,8.3355,-13.0625,Songo area
+1018,Moyiba,residential,Western Area Rural,8.3300,-13.0615,Moyiba community
+1019,Tassoh,residential,Western Area Rural,8.3335,-13.0595,Tassoh area
+1020,Charlotte,residential,Western Area Rural,8.4135,-13.2130,Charlotte village
+1021,Babadorie,residential,Western Area Rural,8.4155,-13.2100,Babadorie area
+1022,Sugar Loaf,residential,Western Area Rural,8.4170,-13.2140,Sugar Loaf mountain area
+1023,Bathurst,residential,Western Area Rural,8.3870,-13.2950,Bathurst village
+1024,John Obey,residential,Western Area Rural,8.3750,-13.3100,John Obey beach area
+1025,River No. 2,residential,Western Area Rural,8.3650,-13.3200,River Number Two area
+1026,Tokeh,residential,Western Area Rural,8.3550,-13.3300,Tokeh beach area
+1027,Hamilton,residential,Western Area Rural,8.3450,-13.3150,Hamilton area
+1028,Sussex,residential,Western Area Rural,8.3350,-13.3050,Sussex village
+1029,Lakka Beach,residential,Western Area Rural,8.3880,-13.3280,Lakka beach community
+1100,Central Freetown,commercial,Western Area Urban,8.4787,-13.2283,CBD core area
+1101,Tower Hill,government,Western Area Urban,8.4818,-13.2290,Government hill area
+1102,Siaka Stevens,commercial,Western Area Urban,8.4770,-13.2260,Main commercial street
+1103,Cline Town,mixed,Western Area Urban,8.4774,-13.1987,Cline Town community
+1104,East End,residential,Western Area Urban,8.4842,-13.1950,East End area
+1105,Fourah Bay,mixed,Western Area Urban,8.4886,-13.2050,Fourah Bay / FBC area
+1106,Congo Town,residential,Western Area Urban,8.4912,-13.2120,Congo Town community
+1107,Foulah Town,residential,Western Area Urban,8.4868,-13.2210,Foulah Town area
+1108,Murray Town,residential,Western Area Urban,8.4676,-13.2660,Murray Town community
+1109,Brookfields,mixed,Western Area Urban,8.4600,-13.2460,Brookfields area
+1110,New England,residential,Western Area Urban,8.4680,-13.2410,New England community
+1111,Tengbeh Town,residential,Western Area Urban,8.4776,-13.2434,Tengbeh Town area
+1112,Imatt,residential,Western Area Urban,8.4700,-13.2390,Imatt community
+1113,Dwarzak,residential,Western Area Urban,8.4695,-13.2380,Dwarzak area
+1114,Hill Station,residential,Western Area Urban,8.4536,-13.2644,Hill Station area
+1115,Wilberforce,residential,Western Area Urban,8.4416,-13.2706,Wilberforce village
+1116,Signal Hill,residential,Western Area Urban,8.4370,-13.2780,Signal Hill area
+1117,Lumley,mixed,Western Area Urban,8.4316,-13.2860,Lumley beach area
+1118,Aberdeen,mixed,Western Area Urban,8.4184,-13.2934,Aberdeen community
+1119,Cockle Bay,residential,Western Area Urban,8.4112,-13.3080,Cockle Bay area
+1120,Goderich,residential,Western Area Urban,8.4058,-13.3180,Goderich village
+1121,Juba,residential,Western Area Urban,8.4446,-13.3020,Juba community
+1122,Lakka,residential,Western Area Urban,8.3884,-13.3280,Lakka village
+1123,Kissy,residential,Western Area Urban,8.4870,-13.1830,Kissy main area
+1124,Kissy Brook,residential,Western Area Urban,8.4720,-13.1790,Kissy Brook area
+1125,Kissy Mess Mess,residential,Western Area Urban,8.4554,-13.1734,Kissy Mess Mess
+1126,Wellington,mixed,Western Area Urban,8.4870,-13.1625,Wellington area
+1127,Portee,residential,Western Area Urban,8.4916,-13.1556,Portee community
+1128,Calaba Town,residential,Western Area Urban,8.4994,-13.1452,Calaba Town
+1129,Allen Town,residential,Western Area Urban,8.5042,-13.1348,Allen Town
+1130,Kingtom,mixed,Western Area Urban,8.4800,-13.2560,Kingtom port area
+1131,Kroo Town,residential,Western Area Urban,8.4976,-13.2070,Kroo Town community
+1132,Kroo Bay,residential,Western Area Urban,8.4755,-13.2290,Kroo Bay area
+1133,Susan's Bay,residential,Western Area Urban,8.4795,-13.2020,Susan's Bay
+1134,Magazine Cut,residential,Western Area Urban,8.4785,-13.2000,Magazine Cut area
+1135,Thunder Hill,residential,Western Area Urban,8.4782,-13.2005,Thunder Hill area
+1136,Big Wharf,commercial,Western Area Urban,8.4790,-13.2015,Big Wharf area
+1137,Mabella,residential,Western Area Urban,8.4750,-13.2280,Mabella community
+1138,Sawpit,residential,Western Area Urban,8.4745,-13.2275,Sawpit area
+1139,Grass Field,residential,Western Area Urban,8.4558,-13.1738,Grass Field area
+1140,Shell,industrial,Western Area Urban,8.4860,-13.1620,Shell industrial area
+1141,Ferry Junction,mixed,Western Area Urban,8.4880,-13.1635,Ferry Junction
+1142,Bai Bureh,residential,Western Area Urban,8.4865,-13.1835,Bai Bureh Road area
+1143,Upper Kissy,residential,Western Area Urban,8.4725,-13.1795,Upper Kissy area
+1144,Lower Kissy,residential,Western Area Urban,8.4868,-13.1832,Lower Kissy area
+1145,Kissy Dockyards,industrial,Western Area Urban,8.4870,-13.1828,Kissy Dockyards area
+1146,Mount Aureol,educational,Western Area Urban,8.4905,-13.2065,FBC Mount Aureol
+1147,Circular Road,residential,Western Area Urban,8.4870,-13.2210,Circular Road area
+1148,PZ,commercial,Western Area Urban,8.4610,-13.2450,PZ Junction area
+1149,Spur Road,commercial,Western Area Urban,8.4590,-13.2470,Spur Road area
+1150,SLBS,mixed,Western Area Urban,8.4605,-13.2455,SLBS area
+1151,King Harman,residential,Western Area Urban,8.4595,-13.2465,King Harman Road area
+1152,Rawdon Street,commercial,Western Area Urban,8.4785,-13.2295,Rawdon Street area
+1153,Lightfoot Boston,commercial,Western Area Urban,8.4792,-13.2270,Lightfoot Boston area
+1154,Gloucester Street,commercial,Western Area Urban,8.4780,-13.2255,Gloucester Street area
+1155,Howe Street,commercial,Western Area Urban,8.4775,-13.2240,Howe Street area
+1156,Westmoreland,residential,Western Area Urban,8.4775,-13.2278,Westmoreland Street area
+1157,George Street,commercial,Western Area Urban,8.4782,-13.2272,George Street area
+1158,Charlotte Street,commercial,Western Area Urban,8.4765,-13.2275,Charlotte Street area
+1159,Garrison Street,mixed,Western Area Urban,8.4760,-13.2265,Garrison Street area
+1160,Wallace Johnson,commercial,Western Area Urban,8.4790,-13.2310,Wallace Johnson Street
+1161,Walpole Street,commercial,Western Area Urban,8.4782,-13.2305,Walpole Street area
+1162,Sanders Street,residential,Western Area Urban,8.4778,-13.2268,Sanders Street area
+1163,Liverpool Street,residential,Western Area Urban,8.4772,-13.2262,Liverpool Street area
+1164,Oxford Street,commercial,Western Area Urban,8.4748,-13.2242,Oxford Street area
+1165,Pademba Road,mixed,Western Area Urban,8.4810,-13.2300,Pademba Road area
+1166,Ross Road,residential,Western Area Urban,8.4535,-13.2648,Ross Road area
+1167,Ginger Hall,residential,Western Area Urban,8.4545,-13.2650,Ginger Hall area
+1168,Leicester Road,residential,Western Area Urban,8.4530,-13.2655,Leicester Road area
+1169,Murray Town Barracks,military,Western Area Urban,8.4675,-13.2665,Murray Town Barracks
+1170,Model School,residential,Western Area Urban,8.4905,-13.2115,Model School area
+1171,Mountain Cut,residential,Western Area Urban,8.4908,-13.2118,Mountain Cut area
+1172,Congo Water,residential,Western Area Urban,8.4912,-13.2122,Congo Water area
+1173,Samba Gutter,residential,Western Area Urban,8.4868,-13.2212,Samba Gutter area
+1174,Aberdeen Ferry,mixed,Western Area Urban,8.4175,-13.2940,Aberdeen Ferry terminal
+1175,Cape Road,residential,Western Area Urban,8.4178,-13.2938,Cape Road area
+1176,Man of War Bay,residential,Western Area Urban,8.4182,-13.2932,Man of War Bay
+1177,Mama Beach,residential,Western Area Urban,8.4170,-13.2945,Mama Beach area
+1178,Lumley Junction,commercial,Western Area Urban,8.4325,-13.2865,Lumley Junction
+1179,Aberdeen Junction,commercial,Western Area Urban,8.4185,-13.2930,Aberdeen Junction
+1180,Ferry Road,mixed,Western Area Urban,8.4802,-13.2558,Ferry Road area
+1181,Government Wharf,commercial,Western Area Urban,8.4808,-13.2560,Government Wharf
+1182,Queen Elizabeth Quay,commercial,Western Area Urban,8.4810,-13.2565,QE Quay area
+1183,Fisher Street,residential,Western Area Urban,8.4805,-13.2555,Fisher Street area
+1184,Crab Town,residential,Western Area Urban,8.4980,-13.2065,Crab Town area
+1185,Campbell Street,residential,Western Area Urban,8.4760,-13.2285,Campbell Street area
+1186,Bath Street,residential,Western Area Urban,8.4765,-13.2282,Bath Street area
+1187,Martin Street,residential,Western Area Urban,8.4770,-13.2280,Martin Street area
+1188,Percival Street,residential,Western Area Urban,8.4763,-13.2252,Percival Street area
+1189,Soldier Street,residential,Western Area Urban,8.4748,-13.2242,Soldier Street area
+1190,Daniel Street,residential,Western Area Urban,8.4758,-13.2248,Daniel Street area
+1191,Trelawney Street,residential,Western Area Urban,8.4752,-13.2245,Trelawney Street area
+1192,Short Street,residential,Western Area Urban,8.4762,-13.2270,Short Street area
+1193,Back Street,residential,Western Area Urban,8.4775,-13.2015,Back Street area
+1194,Savage Square,residential,Western Area Urban,8.4885,-13.2048,Savage Square area
+1195,Pultney Street,residential,Western Area Urban,8.4888,-13.2055,Pultney Street area
+1196,Ascension Town,residential,Western Area Urban,8.4950,-13.1400,Ascension Town
+1197,Funkia,residential,Western Area Urban,8.4920,-13.1450,Funkia area
+1198,Kaningo,residential,Western Area Urban,8.4890,-13.1500,Kaningo area
+1199,Rokupa,residential,Western Area Urban,8.4850,-13.1550,Rokupa area

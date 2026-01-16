@@ -1,0 +1,53 @@
+{
+  "name": "Sierra Leone Postal Zone Directory Summary",
+  "generated": "2026-01-12",
+  "total_zones": 77,
+  "unique_postal_codes": 53,
+  "unique_districts": 16,
+  "unique_regions": 5,
+  "segment_types": {
+    "residential": 52,
+    "commercial": 10,
+    "mixed": 13,
+    "government": 1
+  },
+  "postal_codes": [
+    "1000", "1001", "1002", "1003", "1004", "1005", "1006", "1007", "1008",
+    "1100", "1101", "1102", "1103", "1104", "1105", "1106", "1107", "1108", "1109", "1110",
+    "2100", "2101", "2102", "2200", "2201", "2300", "2301", "2400", "2401", "2402", "2500",
+    "3100", "3101", "3200", "3201", "3202",
+    "4100", "4101", "4200", "4201", "4300", "4301", "4400", "4401",
+    "5100", "5101", "5102", "5200", "5201", "5202", "5300", "5301", "5302"
+  ],
+  "districts": [
+    "Bombali", "Bo", "Bonthe", "Falaba", "Kailahun", "Kambia", "Karene",
+    "Kenema", "Koinadugu", "Kono", "Moyamba", "Port Loko", "Pujehun",
+    "Tonkolili", "Western Area Rural", "Western Area Urban"
+  ],
+  "regions": [
+    "Eastern Province",
+    "North West Province",
+    "Northern Province",
+    "Southern Province",
+    "Western Area"
+  ],
+  "files_created": [
+    "postal_zone_directory.csv - Full address directory with centroids (CSV format)",
+    "postal_zone_directory.json - Full address directory (JSON format)",
+    "postal_zones_polygons.geojson - Zone boundaries for shapefile conversion",
+    "postal_zones_centroids.geojson - Zone centroid points for shapefile conversion",
+    "summary.json - This summary file"
+  ],
+  "shapefile_conversion": {
+    "using_ogr2ogr": [
+      "ogr2ogr -f \"ESRI Shapefile\" postal_zones.shp postal_zones_polygons.geojson",
+      "ogr2ogr -f \"ESRI Shapefile\" postal_centroids.shp postal_zones_centroids.geojson"
+    ],
+    "using_qgis": [
+      "1. Open the GeoJSON file in QGIS",
+      "2. Right-click layer -> Export -> Save Features As...",
+      "3. Select 'ESRI Shapefile' as format",
+      "4. Choose output location and click OK"
+    ]
+  }
+}

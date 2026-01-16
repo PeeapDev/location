@@ -1,0 +1,41 @@
+# Claude Code Project Context
+
+## Quick Reference
+
+This is the **Xeeno Map** project - a National Digital Postal Address System for **Sierra Leone**.
+
+### CRITICAL: DO NOT CHANGE
+- Country: **Sierra Leone** (NOT New Zealand or any other country)
+- Coordinates: Sierra Leone (lat: 6-10, lng: -14 to -10)
+- Postal code format: XYZZ (4 digits)
+- PDA-ID format: SL-XYZZ-NNN-NNNNNN-C
+
+### Tech Stack
+- Frontend: Next.js 14 (App Router), TypeScript, Tailwind CSS, MapLibre GL
+- Backend: FastAPI, PostgreSQL, SQLAlchemy, GeoAlchemy2
+
+### Key Files to Know
+
+1. **Admin Directory Page** (hierarchical postal code navigation):
+   - `frontend/src/app/admin/directory/page.tsx`
+   - Shows: Postal Codes -> Zones -> Zone Details
+
+2. **Layout System**:
+   - `frontend/src/components/LayoutWrapper.tsx` - Hides nav/footer for admin routes
+   - `frontend/src/components/admin/Sidebar.tsx` - Admin navigation
+
+3. **API Base**:
+   - Backend runs on port 8000
+   - Frontend runs on port 3000 (or 3001/3002 if occupied)
+
+### Common TypeScript Issue
+Use `Array.from(new Set(...))` instead of `[...new Set(...)]` for Set spreading.
+
+### Postal Code Regions
+- 1xxx = Western Area (Freetown)
+- 2xxx = Northern Province
+- 3xxx = North West Province
+- 4xxx = Southern Province
+- 5xxx = Eastern Province
+
+See CONTEXT.md for full documentation.

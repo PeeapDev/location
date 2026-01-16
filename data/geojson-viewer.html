@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Freetown GeoJSON Viewer</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        #map { height: 100vh; width: 100%; }
+        .info-panel {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            max-width: 300px;
+        }
+        .info-panel h3 { margin-bottom: 10px; color: #333; }
+        .info-panel p { font-size: 12px; color: #666; margin-bottom: 5px; }
+        .legend { margin-top: 15px; }
+        .legend-item { display: flex; align-items: center; margin: 5px 0; font-size: 12px; }
+        .legend-color { width: 20px; height: 20px; margin-right: 8px; border-radius: 3px; }
+        .file-input { margin-top: 10px; }
+        .file-input input { font-size: 12px; }
+        .btn {
+            background: #4F46E5;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        .btn:hover { background: #4338CA; }
+        .status { font-size: 11px; color: #059669; margin-top: 8px; }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <div class="info-panel">
+        <h3>Freetown GeoJSON Viewer</h3>
+        <p>View postal zones and administrative boundaries</p>
+
+        <div class="file-input">
+            <label>Load GeoJSON file:</label><br>
+            <input type="file" id="fileInput" accept=".json,.geojson,.txt">
+        </div>
+
+        <button class="btn" onclick="loadFreetownZones()">Load Freetown Zones</button>
+        <button class="btn" onclick="clearLayers()">Clear All</button>
+
+        <div id="status" class="status"></div>
+
+        <div class="legend">
+            <strong>Legend:</strong>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #3B82F6; opacity: 0.5;"></div>
+                <span>Western Area Urban</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #10B981; opacity: 0.5;"></div>
+                <span>Western Area Rural</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #F59E0B; opacity: 0.5;"></div>
+                <span>Postal Zones</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Initialize map centered on Freetown
+        const map = L.map('map').setView([8.465, -13.23], 12);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Layer groups
+        let geoJsonLayers = [];
+
+        function setStatus(msg) {
+            document.getElementById('status').textContent = msg;
+        }
+
+        function clearLayers() {
+            geoJsonLayers.forEach(layer => map.removeLayer(layer));
+            geoJsonLayers = [];
+            setStatus('Layers cleared');
+        }
+
+        // Convert OSM Overpass format to GeoJSON
+        function convertOsmToGeoJson(osmData) {
+            const features = [];
+
+            if (osmData.elements) {
+                osmData.elements.forEach(element => {
+                    if (element.type === 'relation') {
+                        // Collect all coordinates from members
+                        const allCoords = [];
+
+                        element.members.forEach(member => {
+                            if (member.geometry) {
+                                const coords = member.geometry.map(p => [p.lon, p.lat]);
+                                allCoords.push(...coords);
+                            }
+                        });
+
+                        if (allCoords.length > 0) {
+                            // Close the polygon if needed
+                            if (allCoords[0][0] !== allCoords[allCoords.length-1][0] ||
+                                allCoords[0][1] !== allCoords[allCoords.length-1][1]) {
+                                allCoords.push(allCoords[0]);
+                            }
+
+                            features.push({
+                                type: 'Feature',
+                                properties: {
+                                    id: element.id,
+                                    name: element.tags?.name || `Relation ${element.id}`,
+                                    admin_level: element.tags?.admin_level,
+                                    type: element.tags?.boundary || 'administrative'
+                                },
+                                geometry: {
+                                    type: 'Polygon',
+                                    coordinates: [allCoords]
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+
+            return {
+                type: 'FeatureCollection',
+                features: features
+            };
+        }
+
+        // Style function for features
+        function getStyle(feature) {
+            const props = feature.properties || {};
+
+            if (props.name?.includes('Urban')) {
+                return { color: '#3B82F6', weight: 2, fillOpacity: 0.3 };
+            } else if (props.name?.includes('Rural')) {
+                return { color: '#10B981', weight: 2, fillOpacity: 0.3 };
+            } else if (props.postal_code || props.zone_code) {
+                return { color: '#F59E0B', weight: 1, fillOpacity: 0.2 };
+            }
+            return { color: '#6366F1', weight: 2, fillOpacity: 0.2 };
+        }
+
+        // Load file
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    const data = JSON.parse(event.target.result);
+                    let geoJson;
+
+                    // Check if it's OSM Overpass format or standard GeoJSON
+                    if (data.elements) {
+                        geoJson = convertOsmToGeoJson(data);
+                        setStatus(`Converted ${geoJson.features.length} features from OSM format`);
+                    } else if (data.type === 'FeatureCollection') {
+                        geoJson = data;
+                        setStatus(`Loaded ${geoJson.features.length} features`);
+                    } else if (data.type === 'Feature') {
+                        geoJson = { type: 'FeatureCollection', features: [data] };
+                        setStatus('Loaded 1 feature');
+                    } else {
+                        throw new Error('Unknown format');
+                    }
+
+                    // Add to map
+                    const layer = L.geoJSON(geoJson, {
+                        style: getStyle,
+                        onEachFeature: function(feature, layer) {
+                            const props = feature.properties;
+                            let popup = '<strong>' + (props.name || 'Unknown') + '</strong>';
+                            if (props.admin_level) popup += '<br>Admin Level: ' + props.admin_level;
+                            if (props.postal_code) popup += '<br>Postal Code: ' + props.postal_code;
+                            if (props.zone_code) popup += '<br>Zone: ' + props.zone_code;
+                            layer.bindPopup(popup);
+                        }
+                    }).addTo(map);
+
+                    geoJsonLayers.push(layer);
+                    map.fitBounds(layer.getBounds());
+
+                } catch (err) {
+                    setStatus('Error: ' + err.message);
+                    console.error(err);
+                }
+            };
+            reader.readAsText(file);
+        });
+
+        // Freetown zones data (simplified polygons)
+        const freetownZones = {
+            type: 'FeatureCollection',
+            features: [
+                {
+                    type: 'Feature',
+                    properties: { name: 'Central Freetown (1100)', postal_code: '1100', zone_type: 'commercial' },
+                    geometry: {
+                        type: 'Polygon',
+                        coordinates: [[
+                            [-13.235, 8.488], [-13.228, 8.490], [-13.222, 8.484],
+                            [-13.225, 8.476], [-13.232, 8.474], [-13.238, 8.480], [-13.235, 8.488]
+                        ]]
+                    }
+                },
+                {
+                    type: 'Feature',
+                    properties: { name: 'Cline Town (1101)', postal_code: '1101', zone_type: 'mixed' },
+                    geometry: {
+                        type: 'Polygon',
+                        coordinates: [[
+                            [-13.205, 8.485], [-13.195, 8.490], [-13.188, 8.482],
+                            [-13.192, 8.472], [-13.200, 8.468], [-13.208, 8.478], [-13.205, 8.485]
+                        ]]
+                    }
+                },
+                {
+                    type: 'Feature',
+                    properties: { name: 'Kissy (1107)', postal_code: '1107', zone_type: 'residential' },
+                    geometry: {
+                        type: 'Polygon',
+                        coordinates: [[
+                            [-13.195, 8.490], [-13.185, 8.495], [-13.175, 8.488],
+                            [-13.178, 8.478], [-13.188, 8.475], [-13.195, 8.482], [-13.195, 8.490]
+                        ]]
+                    }
+                },
+                {
+                    type: 'Feature',
+                    properties: { name: 'Wellington (1110)', postal_code: '1110', zone_type: 'residential' },
+                    geometry: {
+                        type: 'Polygon',
+                        coordinates: [[
+                            [-13.175, 8.488], [-13.165, 8.492], [-13.155, 8.485],
+                            [-13.158, 8.475], [-13.168, 8.472], [-13.175, 8.480], [-13.175, 8.488]
+                        ]]
+                    }
+                },
+                {
+                    type: 'Feature',
+                    properties: { name: 'Aberdeen (1126)', postal_code: '1126', zone_type: 'mixed' },
+                    geometry: {
+                        type: 'Polygon',
+                        coordinates: [[
+                            [-13.298, 8.422], [-13.292, 8.428], [-13.285, 8.420],
+                            [-13.290, 8.410], [-13.300, 8.408], [-13.305, 8.415], [-13.298, 8.422]
+                        ]]
+                    }
+                },
+                {
+                    type: 'Feature',
+                    properties: { name: 'Lumley (1130)', postal_code: '1130', zone_type: 'mixed' },
+                    geometry: {
+                        type: 'Polygon',
+                        coordinates: [[
+                            [-13.292, 8.430], [-13.285, 8.436], [-13.278, 8.428],
+                            [-13.282, 8.418], [-13.292, 8.415], [-13.298, 8.422], [-13.292, 8.430]
+                        ]]
+                    }
+                },
+                {
+                    type: 'Feature',
+                    properties: { name: 'Hill Station (1119)', postal_code: '1119', zone_type: 'residential' },
+                    geometry: {
+                        type: 'Polygon',
+                        coordinates: [[
+                            [-13.272, 8.450], [-13.262, 8.455], [-13.255, 8.448],
+                            [-13.260, 8.438], [-13.270, 8.435], [-13.278, 8.442], [-13.272, 8.450]
+                        ]]
+                    }
+                },
+                {
+                    type: 'Feature',
+                    properties: { name: 'Wilberforce (1117)', postal_code: '1117', zone_type: 'residential' },
+                    geometry: {
+                        type: 'Polygon',
+                        coordinates: [[
+                            [-13.278, 8.442], [-13.270, 8.448], [-13.262, 8.442],
+                            [-13.268, 8.432], [-13.278, 8.428], [-13.285, 8.436], [-13.278, 8.442]
+                        ]]
+                    }
+                }
+            ]
+        };
+
+        function loadFreetownZones() {
+            const layer = L.geoJSON(freetownZones, {
+                style: function(feature) {
+                    const type = feature.properties.zone_type;
+                    const colors = {
+                        commercial: '#EF4444',
+                        residential: '#10B981',
+                        mixed: '#F59E0B'
+                    };
+                    return {
+                        color: colors[type] || '#6366F1',
+                        weight: 2,
+                        fillOpacity: 0.3
+                    };
+                },
+                onEachFeature: function(feature, layer) {
+                    const props = feature.properties;
+                    layer.bindPopup(
+                        `<strong>${props.name}</strong><br>` +
+                        `Postal Code: ${props.postal_code}<br>` +
+                        `Type: ${props.zone_type}`
+                    );
+                }
+            }).addTo(map);
+
+            geoJsonLayers.push(layer);
+            map.fitBounds(layer.getBounds());
+            setStatus(`Loaded ${freetownZones.features.length} Freetown zones`);
+        }
+
+        // Load Freetown zones on startup
+        loadFreetownZones();
+    </script>
+</body>
+</html>

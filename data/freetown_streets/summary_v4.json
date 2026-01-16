@@ -1,0 +1,109 @@
+{
+  "name": "Freetown Complete Street Directory v4 - Expanded CBD",
+  "city": "Freetown & Western Area",
+  "country": "Sierra Leone",
+  "generated": "2026-01-13",
+  "version": "4.0",
+  "total_postal_codes": 130,
+  "total_streets": 467,
+  "cbd_expansion": {
+    "total_cbd_streets": 180,
+    "zones_expanded": [
+      "1100 - Central Freetown (18 streets)",
+      "1101 - Tower Hill (10 streets)",
+      "1102 - Siaka Stevens (6 streets)",
+      "1130 - Kingtom (6 streets)",
+      "1132 - Kroo Bay (4 streets)",
+      "1133 - Susan's Bay (4 streets)",
+      "1134 - Magazine Cut (3 streets)",
+      "1135 - Thunder Hill (3 streets)",
+      "1136 - Big Wharf (4 streets)",
+      "1137 - Mabella (4 streets)",
+      "1138 - Sawpit (3 streets)",
+      "1152 - Rawdon Street (4 streets)",
+      "1153 - Lightfoot Boston (4 streets)",
+      "1154 - Gloucester Street (4 streets)",
+      "1155 - Howe Street (4 streets)",
+      "1156 - Westmoreland (4 streets)",
+      "1157 - George Street (4 streets)",
+      "1158 - Charlotte Street (4 streets)",
+      "1159 - Garrison Street (4 streets)",
+      "1160 - Wallace Johnson (4 streets)",
+      "1161 - Walpole Street (4 streets)",
+      "1162 - Sanders Street (4 streets)",
+      "1163 - Liverpool Street (4 streets)",
+      "1164 - Oxford Street (4 streets)",
+      "1165 - Pademba Road (5 streets)",
+      "1180 - Ferry Road (3 streets)",
+      "1181 - Government Wharf (4 streets)",
+      "1182 - Queen Elizabeth Quay (4 streets)",
+      "1183 - Fisher Street (3 streets)",
+      "1185 - Campbell Street (4 streets)",
+      "1186 - Bath Street (4 streets)",
+      "1187 - Martin Street (4 streets)",
+      "1188 - Percival Street (4 streets)",
+      "1189 - Soldier Street (4 streets)",
+      "1190 - Daniel Street (4 streets)",
+      "1191 - Trelawney Street (4 streets)",
+      "1192 - Short Street (4 streets)",
+      "1193 - Back Street (4 streets)",
+      "1194 - Savage Square (4 streets)",
+      "1195 - Pultney Street (3 streets)"
+    ]
+  },
+  "cbd_key_streets": {
+    "Government Area (1101)": [
+      "Tower Hill",
+      "State House Road",
+      "Parliament Building Road",
+      "Supreme Court Road",
+      "Government House Road",
+      "Attorney General Road",
+      "Ministry of Finance Road",
+      "Treasury Building Road",
+      "Law Court Building Road"
+    ],
+    "Commercial Center (1102)": [
+      "Siaka Stevens Street",
+      "Lamina Sankoh Street",
+      "Ecowas Street",
+      "Bank of Sierra Leone Road",
+      "Cotton Tree Junction",
+      "Independence Avenue"
+    ],
+    "Central Freetown (1100)": [
+      "CBD Main Road",
+      "City Centre Road",
+      "Commercial District Road",
+      "Central Market Road",
+      "Regent Street",
+      "Kissy Street",
+      "Waterloo Street",
+      "Wellington Street",
+      "Freetown Central Market",
+      "Big Market Road",
+      "PZ Road",
+      "Abacha Street",
+      "Goderich Street",
+      "Lumley Street"
+    ],
+    "Port Area": [
+      "Kingtom Wharf Road",
+      "Government Wharf Road",
+      "Queen Elizabeth Quay Road",
+      "Freetown Port Road",
+      "Customs Wharf Road",
+      "Big Wharf Road"
+    ]
+  },
+  "files": {
+    "postal_codes_csv": "../freetown_postal_codes_v2.csv",
+    "postal_codes_geojson": "../freetown_postal_codes_v2.geojson",
+    "streets_csv": "freetown_streets_v4.csv",
+    "cbd_expanded_csv": "cbd_streets_expanded.csv"
+  },
+  "shapefile_conversion": {
+    "tool": "ogr2ogr or QGIS",
+    "command": "ogr2ogr -f \"ESRI Shapefile\" freetown_streets_v4.shp freetown_streets_v4.geojson"
+  }
+}
