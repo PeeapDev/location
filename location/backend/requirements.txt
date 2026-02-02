@@ -39,5 +39,8 @@ requests==2.31.0
 # Google APIs
 googlemaps==4.10.0
 
+# Supabase
+supabase==2.3.0
+
 # Utilities
 python-dotenv==1.0.0

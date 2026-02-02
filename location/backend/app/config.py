@@ -13,17 +13,22 @@ class Settings(BaseSettings):
     app_version: str = "0.1.0"
     debug: bool = False
 
-    # Database
+    # Database (supports local PostgreSQL or Supabase)
     database_url: str = "postgresql+asyncpg://xeeno:xeeno_secret_2024@localhost:5432/xeeno_map"
 
-    # Redis
+    # Supabase Configuration (optional - for direct Supabase client access)
+    supabase_url: Optional[str] = None
+    supabase_anon_key: Optional[str] = None
+    supabase_service_key: Optional[str] = None
+
+    # Redis (optional)
     redis_url: str = "redis://localhost:6379"
 
     # Security
     secret_key: str = "xeeno-dev-secret-key-change-in-production"
     api_key_header: str = "X-API-Key"
 
-    # Google Maps API
+    # Google Maps API (optional)
     google_maps_api_key: Optional[str] = None
 
     # CORS - allow common development ports
