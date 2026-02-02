@@ -1,0 +1,102 @@
+{
+  "name": "Freetown Granular Postal Code System v2",
+  "city": "Freetown & Western Area",
+  "country": "Sierra Leone",
+  "generated": "2026-01-13",
+  "version": "2.0",
+  "total_postal_codes": 130,
+  "total_streets": 185,
+  "postal_code_ranges": {
+    "1000-1029": "Western Area Rural (30 codes)",
+    "1100-1199": "Western Area Urban (100 codes)"
+  },
+  "coverage": {
+    "Western Area Rural": {
+      "code_range": "1000-1029",
+      "count": 30,
+      "areas": [
+        "1000 - Waterloo Central",
+        "1001 - Waterloo Junction",
+        "1002 - Benguema",
+        "1003 - Jui",
+        "1004 - Kossoh Town",
+        "1005 - Newton",
+        "1006 - Hastings",
+        "1007 - Grafton",
+        "1008 - Regent",
+        "1009 - Leicester",
+        "1010 - Gloucester",
+        "1011 - York",
+        "1012 - Kent",
+        "1013 - Tombo",
+        "1014 - Devil Hole",
+        "1015 - Rokel",
+        "1016 - Adonkia",
+        "1017 - Songo",
+        "1018 - Moyiba",
+        "1019 - Tassoh",
+        "1020 - Charlotte",
+        "1021 - Babadorie",
+        "1022 - Sugar Loaf",
+        "1023 - Bathurst",
+        "1024 - John Obey",
+        "1025 - River No. 2",
+        "1026 - Tokeh",
+        "1027 - Hamilton",
+        "1028 - Sussex",
+        "1029 - Lakka Beach"
+      ]
+    },
+    "Western Area Urban": {
+      "code_range": "1100-1199",
+      "count": 100,
+      "major_neighborhoods": [
+        "1100 - Central Freetown (CBD)",
+        "1101 - Tower Hill (Government)",
+        "1102 - Siaka Stevens (Commercial)",
+        "1103 - Cline Town",
+        "1105 - Fourah Bay / FBC",
+        "1106 - Congo Town",
+        "1107 - Foulah Town",
+        "1108 - Murray Town",
+        "1109 - Brookfields",
+        "1110 - New England",
+        "1111 - Tengbeh Town",
+        "1112 - Imatt",
+        "1113 - Dwarzak",
+        "1114 - Hill Station",
+        "1115 - Wilberforce",
+        "1117 - Lumley",
+        "1118 - Aberdeen",
+        "1123 - Kissy",
+        "1126 - Wellington",
+        "1130 - Kingtom"
+      ]
+    }
+  },
+  "area_types": {
+    "commercial": 18,
+    "residential": 87,
+    "mixed": 15,
+    "government": 1,
+    "industrial": 3,
+    "educational": 1,
+    "military": 1
+  },
+  "key_improvements_from_v1": [
+    "Each neighborhood now has its own postal code",
+    "Brookfields (1109) and Imatt (1112) are now separate",
+    "Dwarzak (1113) has its own code",
+    "Street-level granularity in CBD with individual codes for major streets",
+    "100+ postal zones instead of 53"
+  ],
+  "files": {
+    "postal_codes_csv": "freetown_postal_codes_v2.csv",
+    "postal_codes_geojson": "../freetown_postal_codes_v2.geojson",
+    "streets_csv": "freetown_streets_v2.csv"
+  },
+  "shapefile_conversion": {
+    "tool": "ogr2ogr or QGIS",
+    "command": "ogr2ogr -f \"ESRI Shapefile\" freetown_postal_zones_v2.shp freetown_postal_codes_v2.geojson"
+  }
+}

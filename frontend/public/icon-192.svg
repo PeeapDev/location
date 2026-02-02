@@ -1,0 +1,11 @@
+<svg width="192" height="192" viewBox="0 0 192 192" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="192" height="192" rx="32" fill="#4F46E5"/>
+
+  <!-- Map Pin -->
+  <path d="M96 32C69.5 32 48 53.5 48 80C48 116 96 160 96 160C96 160 144 116 144 80C144 53.5 122.5 32 96 32Z" fill="white"/>
+  <circle cx="96" cy="80" r="20" fill="#4F46E5"/>
+
+  <!-- SL Text -->
+  <text x="96" y="88" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="white" text-anchor="middle">SL</text>
+</svg>
