@@ -1,0 +1,53 @@
+# Dependencies
+node_modules/
+venv/
+__pycache__/
+*.pyc
+
+# Build
+.next/
+dist/
+build/
+
+# Environment
+.env
+.env.local
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Large files
+data/*.zip
+data/osm_sierra_leone/gis_osm_buildings_a_free_1.*
+
+# Cache
+.cache/
+*.cache
+
+# Claude temp files
+.claude/
+tmpclaude-*
+**/tmpclaude-*
+
+# Temp data files
+data/*.geojson.txt
+data/qgis_project/
+data/shapefiles/*.shp
+data/shapefiles/*.shx
+data/shapefiles/*.dbf
+data/shapefiles/*.prj
+
+# Frontend temp
+frontend/nul
+
+# Mobile
+mobile/.expo/
+mobile/node_modules/
+mobile/dist/
+mobile/web-build/

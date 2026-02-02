@@ -1,0 +1,12 @@
+# Ignore node_modules - they get reinstalled during build
+node_modules/
+
+# Ignore build artifacts
+dist/
+.expo/
+android/
+ios/
+
+# Ignore dev files
+*.log
+.git/
